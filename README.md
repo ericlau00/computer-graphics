@@ -2,7 +2,7 @@
 
 Computer Graphics w/ JonAlf Dyrland-Weaver at Stuyvesant 2019-2020
 
-## Wednesday, 29 January 2020
+## Wednesday, Thursday 29-30 January 2020
 
 ### Peering into the depths of color.
 
@@ -56,3 +56,38 @@ Raster vs. Vector
   - Raster formats represent images as a grid of pixels.
   - Vector images on raster screens have to be converted into raster images.
   - Simpliest raster images are uncompressed (every pixel has a color value)
+  - Uncompressed vs. Compressed (Raster)
+    - Uncompressed formats contain data for each pixel
+      - BMP (bit map format), TIFF, RAW
+    - Compressed formats use a compression algorithm to minimize file fize.
+    - Lossless vs. Lossy
+      - Lossless compression algorithms contain enough information to exactly recreate the original image.
+        - Run Length Encoding
+        - PNG (Portable Network Graphics), GIF (Graphics Interchange Format)
+      - Lossy compression algorithms do not retain all the details of the original image.
+        - JPEG (Joint Photographic Experts Group)
+
+```plaintext
+RUN LENGTH ENCODING
+BBBBBGGGRRR
+
+B5G3R3
+```
+
+PPM (Portable PixMap)
+
+- Uncompressed raster format
+- Part of a family of formats called NETPBM
+- Pixel data is represented by RGB triplets in either ASCII or binary.
+- All whitespace is equivalent.
+
+```PPM
+P3
+5 5
+255
+255 255 0 255 255 0 255 255 0 255 255 0 255 255 0
+255 255 0 255 255 0 255 255 0 255 255 0 255 255 0
+255 255 0 255 255 0 255 255 0 255 255 0 255 255 0
+255 255 0 255 255 0 255 255 0 255 255 0 255 255 0
+255 255 0 255 255 0 255 255 0 255 255 0 255 255 0
+```
