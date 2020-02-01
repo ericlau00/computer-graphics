@@ -4,3 +4,5 @@ all:
 
 clean:
 	rm program
+	rm pic.png
+	rm pic.ppm
