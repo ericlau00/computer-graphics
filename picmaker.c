@@ -5,8 +5,6 @@
 #include <unistd.h> //read, write, close
 #include <errno.h> //errno
 
-char ** _parse_args(char * line);
-
 int main() {
     int fd = open("pic.ppm", O_CREAT | O_WRONLY | O_TRUNC, 0666);
 
@@ -44,21 +42,5 @@ int main() {
 
     close(fd);
 
-    char command[23] = "convert pic.ppm pic.png";
-    char ** args = _parse_args(command);
-    execvp(args[0], args);
-    free(args);
-
     return 0;
-}
-
-char ** _parse_args(char * line) {
-    char * buff = line;
-    char ** args = malloc(sizeof(char) * 6);
-    int arg = 0;
-    while(buff != NULL) {
-        args[arg++] = strsep(&buff, " ");
-    }
-    args[arg] = NULL;
-    return args;
 }
