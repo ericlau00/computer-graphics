@@ -6,12 +6,12 @@
 #include <errno.h> //errno
 
 int main() {
-    int fd = open("pic.ppm", O_CREAT | O_WRONLY | O_TRUNC, 0666);
+    FILE * stream = fopen("pic.ppm", "w");
 
     char header[16];
     sprintf(header, "P3\n%d %d\n255\n", 500, 700);
 
-    write(fd, &header, strlen(header));
+    fwrite(header, 1, strlen(header), stream);
 
     int x, y;
     char pixel[13];
@@ -20,27 +20,26 @@ int main() {
         int bottom_stripe = rand() % 7;
         for( x = 0; x < 500; x++) {
             if (y < 50 || y > 650 || x < 50 || x > 450 || (y < 450 && y > 420)) {
-                sprintf(pixel, "%d %d %d ", 255, 255, 255);
+                fprintf(stream, "%d %d %d ", 50, 50, 50);
             }
             else if (y < 450) {
                 if(top_stripe == 0) {
-                    sprintf(pixel, "%d %d %d ", 200 + rand() % 20, 200 + rand() % 20, 200 + rand() % 20);
+                    fprintf(stream, "%d %d %d ", 200 + rand() % 20, 200 + rand() % 20, 200 + rand() % 20);
                 } else {
-                    sprintf(pixel, "%d %d %d ", 200, 200, 200);
+                    fprintf(stream, "%d %d %d ", 200, 200, 200);
                 }
             } else {
                 if(bottom_stripe == 0) {
-                    sprintf(pixel, "%d %d %d ", 100 + rand() % 30, 100 + rand() % 30, 100 + rand() % 30);
+                    fprintf(stream, "%d %d %d ", 100 + rand() % 30, 100 + rand() % 30, 100 + rand() % 30);
                 } else {
-                    sprintf(pixel, "%d %d %d ", 100 + rand() % 5, 100 + rand() % 5, 100 + rand() % 5);
+                    fprintf(stream, "%d %d %d ", 100 + rand() % 5, 100 + rand() % 5, 100 + rand() % 5);
                 }
             }
-            write(fd, pixel, strlen(pixel));
         }
-        write(fd, &"\n", sizeof("\n") - 1);
+        fwrite("\n", 1, sizeof("\n") - 1, stream);
     }
 
-    close(fd);
+    fclose(stream);
 
     return 0;
 }
