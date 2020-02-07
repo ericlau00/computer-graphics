@@ -23,8 +23,8 @@ int main() {
 
   //octants 8 and 4
   c.blue = 255;
-  // draw_line(0, YRES-1, XRES-1, 0, s, c); //8
-  // draw_line(0, YRES-1, XRES-1, YRES/2, s, c); //8
+  draw_line(0, YRES-1, XRES-1, 0, s, c); //8
+  draw_line(0, YRES-1, XRES-1, YRES/2, s, c); //8
   draw_line(XRES-1, 0, 0, YRES/2, s, c); //4
 
   //octants 2 and 6
@@ -42,8 +42,8 @@ int main() {
   //horizontal and vertical
   c.blue = 0;
   c.green = 255;
-  // draw_line(0, YRES/2, XRES-1, YRES/2, s, c);
-  // draw_line(XRES/2, 0, XRES/2, YRES-1, s, c);
+  draw_line(0, YRES/2, XRES-1, YRES/2, s, c);
+  draw_line(XRES/2, 0, XRES/2, YRES-1, s, c);
 
   // display(s);
   save_extension(s, "lines.png");

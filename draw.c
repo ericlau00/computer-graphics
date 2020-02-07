@@ -97,16 +97,30 @@ void draw_line(int x0, int y0, int x1, int y1, screen s, color c) {
                 }
             }
         } else if (m > -1) {
-            // octant IV
-            d = -2 * a + b;
-            while(x >= x1) {
-                plot(s, c, x, y);
-                if (d < 0) {
-                    y++;
-                    d += 2 * b;
+            if(y0 < y1) {
+                // octant IV
+                d = -2 * a + b;
+                while(x >= x1) {
+                    plot(s, c, x, y);
+                    if (d < 0) {
+                        y++;
+                        d += 2 * b;
+                    }
+                    x--;
+                    d -= 2 * a;
                 }
-                x--;
-                d -= 2 * a;
+            } else {
+                // octant VIII
+                d = 2 * a - b;
+                while(x < x1) {
+                    plot(s, c, x, y);
+                    if (d < 0) {
+                        y--;
+                        d -= 2 * b;
+                    }
+                    x++;
+                    d += 2 * a;
+                }
             }
         }
     }
