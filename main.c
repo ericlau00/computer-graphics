@@ -19,12 +19,12 @@ int main() {
   //octants 1 and 5
   draw_line(0, 0, XRES-1, YRES-1, s, c); // 1
   draw_line(0, 0, XRES-1, YRES / 2, s, c); // 1
-  // draw_line(XRES-1, YRES-1, 0, YRES / 2, s, c); //5
+  draw_line(XRES-1, YRES-1, 0, YRES / 2, s, c); //5
 
-  // //octants 8 and 4
+  //octants 8 and 4
   c.blue = 255;
-  // draw_line(0, YRES-1, XRES-1, 0, s, c);
-  // draw_line(0, YRES-1, XRES-1, YRES/2, s, c);
+  // draw_line(0, YRES-1, XRES-1, 0, s, c); //8
+  // draw_line(0, YRES-1, XRES-1, YRES/2, s, c); //8
   draw_line(XRES-1, 0, 0, YRES/2, s, c); //4
 
   //octants 2 and 6
@@ -32,14 +32,14 @@ int main() {
   c.green = 0;
   c.blue = 0;
   draw_line(0, 0, XRES/2, YRES-1, s, c); // 2
-  // draw_line(XRES-1, YRES-1, XRES/2, 0, s, c);
+  draw_line(XRES-1, YRES-1, XRES/2, 0, s, c); //6
 
-  // //octants 7 and 3
+  //octants 7 and 3
   c.blue = 255;
-  // draw_line(0, YRES-1, XRES/2, 0, s, c);
+  draw_line(0, YRES-1, XRES/2, 0, s, c); // 7
   draw_line(XRES-1, 0, XRES/2, YRES-1, s, c); // 3
 
-  // //horizontal and vertical
+  //horizontal and vertical
   c.blue = 0;
   c.green = 255;
   // draw_line(0, YRES/2, XRES-1, YRES/2, s, c);
