@@ -49,4 +49,6 @@ int main() {
   save_extension(s, "lines.png");
   save_ppm(s, "binary.ppm");
   save_ppm_ascii(s, "ascii.ppm");
+
+  return 0;
 }
