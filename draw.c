@@ -13,7 +13,17 @@ void draw_line(int x0, int y0, int x1, int y1, screen s, color c) {
     int b = -1 * (x1 - x0);
     int d;
     if (b == 0) {
-        // vertical line
+        if (y0 < y1) {
+            while(y <= y1) {
+                plot(s, c, x, y);
+                y++;
+            }
+        } else {
+            while(y >= y1) {
+                plot(s, c, x, y);
+                y--;
+            }
+        }
     }
     else {
         double m = a / (-1.0 * b);
@@ -96,11 +106,11 @@ void draw_line(int x0, int y0, int x1, int y1, screen s, color c) {
                     d -= 2 * b;
                 }
             }
-        } else if (m > -1) {
-            if(y0 < y1) {
+        } else if (m >= -1) {
+            if(x0 > x1) {
                 // octant IV
                 d = -2 * a + b;
-                while(x >= x1) {
+                while(x > x1) {
                     plot(s, c, x, y);
                     if (d < 0) {
                         y++;
@@ -112,7 +122,7 @@ void draw_line(int x0, int y0, int x1, int y1, screen s, color c) {
             } else {
                 // octant VIII
                 d = 2 * a - b;
-                while(x < x1) {
+                while(x <= x1) {
                     plot(s, c, x, y);
                     if (d < 0) {
                         y--;
