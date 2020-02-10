@@ -3,8 +3,11 @@ CFLAGS= -Wall
 CC= gcc
 
 run: main
-	./main
+	./main base
 
+gallery: main
+	./main gallery
+	
 main: $(OBJECTS)
 	$(CC) -o main $(OBJECTS)
 
