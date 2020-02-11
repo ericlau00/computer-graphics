@@ -2,6 +2,10 @@
 
 Computer Graphics w/ JonAlf Dyrland-Weaver at Stuyvesant 2019-2020
 
+## Monday, 3 February 2020
+
+### Line Algorithm
+
 ## Wednesday, Thursday 29-30 January 2020
 
 ### Peering into the depths of color.
