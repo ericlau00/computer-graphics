@@ -2,6 +2,72 @@
 
 Computer Graphics w/ JonAlf Dyrland-Weaver at Stuyvesant 2019-2020
 
+## Tuesday, 11 February 2020
+
+### Matrices in Graphics
+
+- We will maintain a list (matrix) of points that can represent an entire image.
+- We will store points in an edge matrix such that each pair of points defines a seperate line.
+
+```plaintext
+p0 p1 p2 p3 pn-1 pn
+
+p0 p1 defines a line
+p2 p3 defines a line
+
+a triangle would be defined by
+p0 p1 p1 p2 p2 p0
+```
+
+- Each point is a set of (x, y) or (x, y, z) coordinates
+
+```plaintext
+x0 x1 ... xn-1 xn
+y0 y1 ... yn-1 yn
+z0 z1 ... zn-1 zn
+
+columns make a point
+rows are x to xn
+
+(matrix / 2d array)
+```
+
+- Matrix Multiplication
+  - M0 &#215; M1 != M1 &#215; M0
+  - Number of columns of M0 must equal the number of rows in M1
+
+```plaintext
+            a
+1  2  3  *  b = 1a + 2b + 3c
+            c
+
+(number of rows from M0, number of columns from M1)
+
+          a d
+1 2 3  *  b e = 1a + 2b + 3c  1d + 2e + 3f
+          c f
+```
+
+```plaintext
+x0     xn
+y0 ... yn
+z0     zn
+
+3 by n matrix
+```
+
+3 by 3 matrix * 3 by n matrix = 3 by n matrix
+
+```plaintext
+1 0 0
+0 1 0 is the identity matrix
+0 0 1
+
+2 0 0
+0 2 0 is a scale by 2
+0 0 2
+```
+
 ## Monday, 3 February 2020
 
 ### Line Algorithm
