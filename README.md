@@ -2,7 +2,7 @@
 
 Computer Graphics w/ JonAlf Dyrland-Weaver at Stuyvesant 2019-2020
 
-## Tuesday, 11 February 2020
+## Tuesday, Wednesday 11-12 February 2020
 
 ### Matrices in Graphics
 
@@ -67,6 +67,17 @@ z0     zn
 0 2 0 is a scale by 2
 0 0 2
 ```
+
+```plaintext
+TRANSFORMATION MATRIX     EDGE MATRIX
+       1 0 0                x0 x1 xn
+       0 1 0                y0 y1 yn
+       0 0 1                z0 z1 zn
+
+       3 x 3                3  by n
+```
+
+Matrix multiplication is always transformation matrix row multiplied by edge matrix column
 
 ## Monday, 3 February 2020
 
