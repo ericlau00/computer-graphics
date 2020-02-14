@@ -39,14 +39,22 @@ int main() {
 
   printf("\nTesting Matrix mult. m1=\n");
 
+  copy_matrix(m2, m1);
+  m1->lastcol = 2;
+  add_edge(m1, 7, 8, 9, 10, 11, 12);
+  print_matrix(m1);
+
   printf("\nTesting Matrix mult. m1 * m2 = \n");
+
+  matrix_mult(m1, m2);
+  print_matrix(m2);
 
   clear_screen(s);
   draw_lines(m2, s, c);
   // display(s);
-  save_extension(s, "lines.png");
-  save_ppm(s, "binary.ppm");
-  save_ppm_ascii(s, "ascii.ppm");
+  // save_extension(s, "lines.png");
+  // save_ppm(s, "binary.ppm");
+  // save_ppm_ascii(s, "ascii.ppm");
 
   free_matrix(m1);
   free_matrix(m2);
