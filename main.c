@@ -22,16 +22,21 @@ int main() {
   add_edge(m2, 1, 2, 3, 4, 5, 6);
   print_matrix(m2);
 
-  printf("Testing ident. m1 =\n");
+  printf("\nTesting ident. m1 =\n");
 
   ident(m1);
   print_matrix(m1);
 
-  printf("Testing Matrix mult. m1 * m2 =\n");
+  printf("\nTesting Matrix mult. m1 * m2 =\n");
 
-  printf("Testing Matrix mult. m1=\n");
+  matrix_mult(m1, m2);
+  print_matrix(m2);
 
-  printf("Testing Matrix mult. m1 * m2 = \n");
+  printf("\nTesting Matrix mult. m1=\n");
 
+
+  printf("\nTesting Matrix mult. m1 * m2 = \n");
+
+  free_matrix(m1);
   free_matrix(m2);
 }

@@ -25,7 +25,7 @@ void print_matrix(struct matrix *m) {
   int row = 0;
   for(; row < m->rows; row++) {
     int col = 0;
-    for(; col < m->cols; col++) {
+    for(; col < m->lastcol; col++) {
       printf("%.2f ", m->m[row][col]);
     }
     printf("\n");
@@ -38,6 +38,11 @@ Inputs:  struct matrix *m <-- assumes m is a square matrix
 turns m in to an identity matrix
 */
 void ident(struct matrix *m) {
+  m->lastcol = 0;
+  int i = 0;
+  for(; i < 4; i++, m->lastcol++) {
+    m->m[i][i] = 1;
+  }
 }
 
 
