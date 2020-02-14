@@ -10,6 +10,11 @@
 int main() {
 
   screen s;
+  color c;
+
+  c.red = 255;
+  c.blue = 0;
+  c.green = 0;
 
   struct matrix *m2;
   struct matrix *m1;
@@ -34,8 +39,14 @@ int main() {
 
   printf("\nTesting Matrix mult. m1=\n");
 
-
   printf("\nTesting Matrix mult. m1 * m2 = \n");
+
+  clear_screen(s);
+  draw_lines(m2, s, c);
+  // display(s);
+  save_extension(s, "lines.png");
+  save_ppm(s, "binary.ppm");
+  save_ppm_ascii(s, "ascii.ppm");
 
   free_matrix(m1);
   free_matrix(m2);
