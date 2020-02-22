@@ -54,8 +54,23 @@ multiply a by b, modifying b to be the product
 a*b -> b
 */
 void matrix_mult(struct matrix *a, struct matrix *b) {
+  int row = 0;
+  struct matrix *temp;
+  temp = new_matrix(b->rows,b->cols);
+  for(; row < a->rows; row++) {
+    int col = 0;
+    for(; col < b->cols; col++) {
+      double dot_product = 0;
+      int i = 0;
+      for(; i < b->rows; i++) {
+        dot_product += a->m[row][i] * b->m[i][col];
+      }
+      temp->m[row][col] = dot_product;
+    }
+  }
+  copy_matrix(temp, b);
+  free_matrix(temp);
 }
-
 
 
 /*===============================================
