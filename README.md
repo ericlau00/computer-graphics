@@ -2,6 +2,46 @@
 
 Computer Graphics w/ JonAlf Dyrland-Weaver at Stuyvesant 2019-2020
 
+## Monday, 24 February 2020
+
+### Transformations
+
+- scale, translate, rotate
+- applied as matrix multiplication
+
+#### Scale
+
+```plaintext
+(x, y, z) --- S_(a, b, c) -> (ax, by, cz)
+
+[ a 0 0 0 ] [ x ]   [ ax ]
+[ 0 b 0 0 ] [ y ]   [ by ]
+[ 0 0 c 0 ] [ z ]   [ cz ]
+[ 0 0 0 1 ] [ 1 ]   [ 1  ]
+```
+
+#### Translate
+
+```plaintext
+(x, y, z) --- T_(a, b, c) -> (x + a, y + b, z + c)
+
+[ 1 0 0 a ] [ x ]   [ x + a ]
+[ 0 1 0 b ] [ y ]   [ y + b ]
+[ 0 0 1 c ] [ z ]   [ z + c ]
+[ 0 0 0 1 ] [ 1 ]   [   1   ]
+```
+
+#### Rotate
+
+```plaintext
+(x, y, z) --- R_(z-axis, θ) -> (xcosθ - ysinθ, ycosθ + xsinθ, z)
+
+[ cosθ -sinθ 0 0 ] [ x ]   [ xcosθ - ysinθ ]
+[ sinθ  cosθ 0 0 ] [ y ]   [ ycosθ + xsinθ ]
+[  0     0   1 0 ] [ z ]   [       z       ]
+[  0     0   0 1 ] [ 1 ]   [       1       ]
+```
+
 ## Tuesday, Wednesday 11-12 February 2020
 
 ### Matrices in Graphics
