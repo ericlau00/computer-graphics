@@ -2,7 +2,26 @@
 
 Computer Graphics w/ JonAlf Dyrland-Weaver at Stuyvesant 2019-2020
 
-## Monday, 24 February 2020
+## Monday, Tuesday 24, 25 February 2020
+
+### Master transformation
+
+```plaintext
+E0: EDGES T: TRANSLATE R: ROTATE S: SCALE
+
+T * E0 = E1 : E0 -> TRANSLATED
+R * E1 = E2 : E0 -> TRANSLATED -> ROTATED
+S * E2 = E3 : E0 -> TRANSLATED -> ROTATED -> SCALED
+
+E3 = S * E2
+         E2 = R * E1
+                  E1 = T * E0
+
+E3 = (S * R * T) * E0
+
+T is applied first
+S is applied last
+```
 
 ### Transformations
 
@@ -34,12 +53,50 @@ Computer Graphics w/ JonAlf Dyrland-Weaver at Stuyvesant 2019-2020
 #### Rotate
 
 ```plaintext
-(x, y, z) --- R_(z-axis, θ) -> (xcosθ - ysinθ, ycosθ + xsinθ, z)
+x = rcosΦ
+y = rsinΦ
+x' = rcos(Φ + θ)
+   = xcosθ - ysinθ
+y' = rsin(Φ + θ)
+y' = ycosθ + xsinθ
+
+(x, y, z) --- R_(θ, z-axis) -> (xcosθ - ysinθ, ycosθ + xsinθ, z)
 
 [ cosθ -sinθ 0 0 ] [ x ]   [ xcosθ - ysinθ ]
 [ sinθ  cosθ 0 0 ] [ y ]   [ ycosθ + xsinθ ]
 [  0     0   1 0 ] [ z ]   [       z       ]
 [  0     0   0 1 ] [ 1 ]   [       1       ]
+
+-----
+
+y = rcosΦ
+z = rsinΦ
+y' = rcos(Φ + θ)
+   = ycosθ - zsinθ
+z' = rsin(Φ + θ)
+   = zcosθ + ysinθ
+(x, y, z) --- R_(θ, x-axis) -> (x, ycosθ - zsinθ, zcosθ + ysinθ)
+
+[  1     0      0  0 ] [ x ]   [       x       ]
+[  0    cosθ -sinθ 0 ] [ y ]   [ ycosθ - zsinθ ]
+[  0    sinθ  cosθ 0 ] [ z ]   [ zcosθ + ysinθ ]
+[  0     0     0   1 ] [ 1 ]   [       1       ]
+
+-----
+
+z = rcosΦ
+x = rsinΦ
+z' = rcos(Φ + θ)
+   = xcosθ + zsinθ
+x' = rsin(Φ + θ)
+   = -xsinθ + zcosθ
+
+(x, y, z) --- R_(θ, y-axis) -> (xcosθ + zsinθ, y, -xsinθ + zcosθ)
+
+[ cosθ  0 sinθ  0 ] [ x ]   [ xcosθ + zsinθ ]
+[  0    1  0    0 ] [ y ]   [       y       ]
+[ sinθ  0 cosθ  0 ] [ z ]   [-xsinθ + zcosθ ]
+[  0    0  0    1 ] [ 1 ]   [       1       ]
 ```
 
 ## Tuesday, Wednesday 11-12 February 2020
