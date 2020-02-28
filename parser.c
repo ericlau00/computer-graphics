@@ -61,6 +61,11 @@ void parse_file ( char * filename,
   char line[256];
   clear_screen(s);
 
+  color c;
+  c.red = 0;
+  c.green = 0;
+  c.blue = 0;
+
   if ( strcmp(filename, "stdin") == 0 )
     f = stdin;
   else
@@ -74,25 +79,26 @@ void parse_file ( char * filename,
     } else if (strcmp(line, 'ident') == 0 ) {
       ident(transform);
     } else if(strcmp(line, 'scale') == 0) {
-
+      struct matrix * scaler = new_matrix(4, 4);
+      matrix_mult(scaler, transform);
     } else if(strcmp(line, 'move') == 0) {
-
+      struct matrix * translation = new_matrix(4, 4);
+      matrix_mult(translation, transform);
     } else if(strcmp(line, 'rotate') == 0) {
-
+      struct matrix * rotation = new_matrix(4, 4);
+      matrix_mult(rotation, transform);
     } else if(strcmp(line, 'apply') == 0) {
-
+      matrix_mult(transform, edges);
     } else if (strcmp(line, 'display') == 0 ) {
-      color c;
-      c.red = 0;
-      c.green = 0;
-      c.blue = 0;
       clear_screen(s);
       draw_lines(edges, s, c);
       display(s);
     } else if(strcmp(line, 'save') == 0) {
-
+      clear_screen(s);
+      draw_lines(edges, s, c);
+      save_extension(s, "lines.png"); // take in argument instead of lines.png
     } else if(strcmp(line, 'quit') == 0) {
-
+      exit(0);
     }
   }
 }
