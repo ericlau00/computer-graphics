@@ -28,7 +28,7 @@ The file follows the following format:
          scale: create a scale matrix,
                 then multiply the transform matrix by the scale matrix -
                 takes 3 arguments (sx, sy, sz)
-         translate: create a translation matrix,
+         move: create a translation matrix,
                     then multiply the transform matrix by the translation matrix -
                     takes 3 arguments (tx, ty, tz)
          rotate: create a rotation matrix,
@@ -69,6 +69,31 @@ void parse_file ( char * filename,
   while ( fgets(line, 255, f) != NULL ) {
     line[strlen(line)-1]='\0';
     printf(":%s:\n",line);
+    if(strcmp(line, 'line') == 0) {
+      add_edge(edges, 0, 0, 0, 0, 0, 0);
+    } else if (strcmp(line, 'ident') == 0 ) {
+      ident(transform);
+    } else if(strcmp(line, 'scale') == 0) {
+
+    } else if(strcmp(line, 'move') == 0) {
+
+    } else if(strcmp(line, 'rotate') == 0) {
+
+    } else if(strcmp(line, 'apply') == 0) {
+
+    } else if (strcmp(line, 'display') == 0 ) {
+      color c;
+      c.red = 0;
+      c.green = 0;
+      c.blue = 0;
+      clear_screen(s);
+      draw_lines(edges, s, c);
+      display(s);
+    } else if(strcmp(line, 'save') == 0) {
+
+    } else if(strcmp(line, 'quit') == 0) {
+
+    }
   }
 }
 
