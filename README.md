@@ -95,7 +95,7 @@ x' = rsin(Φ + θ)
 
 [ cosθ  0 sinθ  0 ] [ x ]   [ xcosθ + zsinθ ]
 [  0    1  0    0 ] [ y ]   [       y       ]
-[ sinθ  0 cosθ  0 ] [ z ]   [-xsinθ + zcosθ ]
+[ -sinθ 0 cosθ  0 ] [ z ]   [-xsinθ + zcosθ ]
 [  0    0  0    1 ] [ 1 ]   [       1       ]
 ```
 
