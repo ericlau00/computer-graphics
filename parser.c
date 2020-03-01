@@ -89,8 +89,6 @@ void parse_file ( char * filename,
       sscanf(str_args, "%d %d %d", &args[0], &args[1], &args[2]);
       struct matrix * scaler = make_scale(args[0], args[1], args[2]);
       matrix_mult(scaler, transform);
-      // print_matrix(scaler);
-      // print_matrix(transform);
     } else if(strcmp(line, "move") == 0) {
       fgets(str_args, 255, f);
       str_args[strlen(str_args)-1] = '\0';
@@ -103,19 +101,14 @@ void parse_file ( char * filename,
       sscanf(str_args, "%c %d", &rotation, &args[0]);
       struct matrix * rotator;
       if (rotation == 'x') {
-        printf("x axis\n");
         rotator = make_rotX(args[0]);
       } else if (rotation == 'y') {
-        printf("y axis\n");
         rotator = make_rotY(args[0]);
       } else if (rotation == 'z') {
-        printf("z axis\n");
         rotator = make_rotZ(args[0]);
       }
       matrix_mult(rotator, transform);
     } else if(strcmp(line, "apply") == 0) {
-      // print_matrix(transform);
-      // print_matrix(edges);
       matrix_mult(transform, edges);
     } else if (strcmp(line, "display") == 0 ) {
       clear_screen(s);
