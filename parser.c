@@ -59,6 +59,8 @@ void parse_file ( char * filename,
 
   FILE *f;
   char line[256];
+  char str_args[256];
+  int args[6];
   clear_screen(s);
 
   color c;
@@ -72,32 +74,34 @@ void parse_file ( char * filename,
     f = fopen(filename, "r");
 
   while ( fgets(line, 255, f) != NULL ) {
+    fgets(str_args, 255, f);
     line[strlen(line)-1]='\0';
-    printf(":%s:\n",line);
-    if(strcmp(line, 'line') == 0) {
-      add_edge(edges, 0, 0, 0, 0, 0, 0);
-    } else if (strcmp(line, 'ident') == 0 ) {
+    // printf(":%s:\n",line);
+    if(strcmp(line, "line") == 0) {
+      sscanf(str_args, "%d %d %d %d %d %d", &args[0], &args[1], &args[2], &args[3], &args[4] ,&args[5]);
+      add_edge(edges, args[0], args[1], args[2], args[3], args[4], args[5]);
+    } else if (strcmp(line, "ident") == 0 ) {
       ident(transform);
-    } else if(strcmp(line, 'scale') == 0) {
+    } else if(strcmp(line, "scale") == 0) {
       struct matrix * scaler = new_matrix(4, 4);
       matrix_mult(scaler, transform);
-    } else if(strcmp(line, 'move') == 0) {
+    } else if(strcmp(line, "move") == 0) {
       struct matrix * translation = new_matrix(4, 4);
       matrix_mult(translation, transform);
-    } else if(strcmp(line, 'rotate') == 0) {
+    } else if(strcmp(line, "rotate") == 0) {
       struct matrix * rotation = new_matrix(4, 4);
       matrix_mult(rotation, transform);
-    } else if(strcmp(line, 'apply') == 0) {
+    } else if(strcmp(line, "apply") == 0) {
       matrix_mult(transform, edges);
-    } else if (strcmp(line, 'display') == 0 ) {
+    } else if (strcmp(line, "display") == 0 ) {
       clear_screen(s);
       draw_lines(edges, s, c);
-      display(s);
-    } else if(strcmp(line, 'save') == 0) {
+      // display(s);
+    } else if(strcmp(line, "save") == 0) {
       clear_screen(s);
       draw_lines(edges, s, c);
       save_extension(s, "lines.png"); // take in argument instead of lines.png
-    } else if(strcmp(line, 'quit') == 0) {
+    } else if(strcmp(line, "quit") == 0) {
       exit(0);
     }
   }
