@@ -39,6 +39,7 @@ as the scale factors
 ====================*/
 struct matrix * make_scale(double x, double y, double z) {
   struct matrix * t = new_matrix(4,4);
+  ident(t);
   t->m[0][0] = x;
   t->m[1][1] = y;
   t->m[2][2] = z;
