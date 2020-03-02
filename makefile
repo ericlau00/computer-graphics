@@ -6,6 +6,10 @@ CC= gcc
 run: all
 	./main script
 
+gallery: all
+	python3 script.py
+	./main gallery
+
 all: $(OBJECTS)
 	$(CC) -o main $(OBJECTS) $(LDFLAGS)
 

@@ -113,7 +113,7 @@ void parse_file ( char * filename,
     } else if (strcmp(line, "display") == 0 ) {
       clear_screen(s);
       draw_lines(edges, s, c);
-      // display(s);
+      display(s);
     } else if(strcmp(line, "save") == 0) {
       fgets(str_args, 255, f);
       str_args[strlen(str_args)-1] = '\0';
