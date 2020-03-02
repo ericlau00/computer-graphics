@@ -60,7 +60,7 @@ void parse_file ( char * filename,
   FILE *f;
   char line[256];
   char str_args[256];
-  int args[6];
+  double args[6];
   char rotation;
   clear_screen(s);
 
@@ -79,26 +79,26 @@ void parse_file ( char * filename,
     if(strcmp(line, "line") == 0) {
       fgets(str_args, 255, f);
       str_args[strlen(str_args)-1] = '\0';
-      sscanf(str_args, "%d %d %d %d %d %d", &args[0], &args[1], &args[2], &args[3], &args[4] ,&args[5]);
+      sscanf(str_args, "%lf %lf %lf %lf %lf %lf", &args[0], &args[1], &args[2], &args[3], &args[4] ,&args[5]);
       add_edge(edges, args[0], args[1], args[2], args[3], args[4], args[5]);
     } else if (strcmp(line, "ident") == 0 ) {
       ident(transform);
     } else if(strcmp(line, "scale") == 0) {
       fgets(str_args, 255, f);
       str_args[strlen(str_args)-1] = '\0';
-      sscanf(str_args, "%d %d %d", &args[0], &args[1], &args[2]);
+      sscanf(str_args, "%lf %lf %lf", &args[0], &args[1], &args[2]);
       struct matrix * scaler = make_scale(args[0], args[1], args[2]);
       matrix_mult(scaler, transform);
     } else if(strcmp(line, "move") == 0) {
       fgets(str_args, 255, f);
       str_args[strlen(str_args)-1] = '\0';
-      sscanf(str_args, "%d %d %d", &args[0], &args[1], &args[2]);
+      sscanf(str_args, "%lf %lf %lf", &args[0], &args[1], &args[2]);
       struct matrix * translator = make_translate(args[0], args[1], args[2]);
       matrix_mult(translator, transform);
     } else if(strcmp(line, "rotate") == 0) {
       fgets(str_args, 255, f);
       str_args[strlen(str_args)-1] = '\0';
-      sscanf(str_args, "%c %d", &rotation, &args[0]);
+      sscanf(str_args, "%c %lf", &rotation, &args[0]);
       struct matrix * rotator;
       if (rotation == 'x') {
         rotator = make_rotX(args[0]);
