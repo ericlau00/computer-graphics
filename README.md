@@ -2,6 +2,29 @@
 
 Computer Graphics w/ JonAlf Dyrland-Weaver at Stuyvesant 2019-2020
 
+## Monday, 02 March 2020
+
+### Parametric Equations
+
+- Define curves as systems of equations in terms of a signel independent variable
+
+- Non Parametric
+  - y = f(x)
+- Parametric
+  - y = f(t)
+  - x = g(t)
+
+### Parametric Line
+
+(x0, y0) -> (x1, y1)
+x = x0 + (x1 - x0)t
+y = y0 + (y1 - y0)t
+
+### Circle
+
+x = rcosθ + Cx => x = rcos(2πt) + Cx
+y = rsinθ + Cy => y = rsin(2πt) + Cy
+
 ## Monday, Tuesday 24, 25 February 2020
 
 ### Master transformation
