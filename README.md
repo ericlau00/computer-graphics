@@ -2,6 +2,28 @@
 
 Computer Graphics w/ JonAlf Dyrland-Weaver at Stuyvesant 2019-2020
 
+## Tuesday, 03 March 2020
+
+## Curve
+
+### Splines
+
+- Cubic curves that are designed so that they can be combined in a smooth and continuous way
+- Bezier
+  - Given
+    - 2 endpoints
+    - n influence points (degree - 1)
+  - Line
+    - `P_t = (1 - t)P_0 + tP_1`
+    - `x_t = (1 - t)x_0 + tx_1`
+    - `y_t = (1 - t)y_0 + ty_1`
+  - Quadratic
+    - `Q_t = (1 - t)Q_0 + tQ_1`
+    - `Q_0t = (1 - t)P_0 + tP_1`
+    - `Q_1t = (1 - t)P_1 + tP_2`
+    - `Q_t = (1 - t)[(1 - t)P_0 + tP_1] + t[(1 - t)P_1 +tP_2]`
+    - `Q-t = (1 - t)^2(P_0) + 2t(1 - t)P_1 + t^2(P_2)`
+
 ## Monday, 02 March 2020
 
 ### Parametric Equations
