@@ -2,14 +2,14 @@
 
 Computer Graphics w/ JonAlf Dyrland-Weaver at Stuyvesant 2019-2020
 
-## Tuesday, 03 March 2020
+## Tuesday, Thursday 03, 05 March 2020
 
 ## Curve
 
 ### Splines
 
 - Cubic curves that are designed so that they can be combined in a smooth and continuous way
-- Bezier
+- Bezier curves
   - Given
     - 2 endpoints
     - n influence points (degree - 1)
@@ -23,6 +23,24 @@ Computer Graphics w/ JonAlf Dyrland-Weaver at Stuyvesant 2019-2020
     - `Q_1t = (1 - t)P_1 + tP_2`
     - `Q_t = (1 - t)[(1 - t)P_0 + tP_1] + t[(1 - t)P_1 +tP_2]`
     - `Q-t = (1 - t)^2(P_0) + 2t(1 - t)P_1 + t^2(P_2)`
+  - Cubic
+    - `R_t = (1 - t)R_0 + tR_1`
+    - `R_0 = (1 - t)^2(P_0) + 2t(1 - t)(P_1) + t^2(P_2)`
+    - `R_1 = (1 - t)^2(P_1) + 2t(1 - t)(P_2) + t^2(P_3)`
+    - `R_t = (1 - t)[(1 - t)^2(P_0) + 2t(1 - t)(P_1) + t^2(P_2)] + t[(1 - t)^2(P_1) + 2t(1 - t)(P_2) + t^2(P_3)]`
+    - `R_t = (1 - t)^3(P_0) + 3t(1 - t)^2(P_1) + 3t^2(1 - t)P_2 + t^3(P_3)`
+    - `R_t = (-P_0 + 3P_1 - 3P_2 + P_3)t^3 + (3P_0 - 6P_1 + 3P_2)t^2 + (-3P_0 + 3P_1)t + P_0`
+  - `d + t(c + t(b + ta))` is computationally more efficient than `at^3 + bt^2 + ct + d`
+- Hermite curves
+  - Defined by:
+    - 2 endpoints (P_0 and P_1)
+    - rates of change at each endpoint (R_0 and R_1)
+  - `f(t) = at^3 + bt^2 + ct + d` gives you points
+  - `f'(t) = 3at^2 + 2bt + c` gives you rates of change
+  - `f(0) = d` : P_0
+  - `f'(0) = c`: R_0
+  - `f(1) = a + b + c + d` : P_1
+  - `f'(1) = 3a + 2b + c` : R_1
 
 ## Monday, 02 March 2020
 
