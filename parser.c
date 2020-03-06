@@ -85,11 +85,30 @@ void parse_file ( char * filename,
     double xvals[3];
     double yvals[3];
     double zvals[4];
+    double radius;
     struct matrix *tmp;
     double theta;
     char axis;
 
-    if ( strncmp(line, "line", strlen(line)) == 0 ) {
+    // circle: add a circle to the edge matrix -
+    //              takes 4 arguments (cx, cy, cz, r)
+    // hermite: add a hermite curve to the edge matrix -
+    //         takes 8 arguments (x0, y0, x1, y1, rx0, ry0, rx1, ry1)
+    // bezier: add a bezier curve to the edge matrix -
+    //         takes 8 arguments (x0, y0, x1, y1, x2, y2, x3, y3)
+
+    if (strncmp(line, "circle", strlen(line)) == 0) {
+      fgets(line, sizeof(line), f);
+
+      sscanf(line, "%lf %lf %lf %lf", xvals, yvals, zvals, radius);
+    }
+    else if ( strncmp(line, "hermite", strlen(line)) == 0) {
+      fgets(line, sizeof(line), f);
+    }
+    else if ( strncmp(line, "bezier", strlen(line)) == 0) {
+      fgets(line, sizeof(line), f);
+    }
+    else if ( strncmp(line, "line", strlen(line)) == 0 ) {
       fgets(line, sizeof(line), f);
       //printf("LINE\t%s", line);
 
