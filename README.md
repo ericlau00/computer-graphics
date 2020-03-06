@@ -2,9 +2,9 @@
 
 Computer Graphics w/ JonAlf Dyrland-Weaver at Stuyvesant 2019-2020
 
-## Tuesday, Thursday 03, 05 March 2020
+## Tuesday, Thursday, Friday 03, 05, 06 March 2020
 
-## Curve
+## Curves
 
 ### Splines
 
@@ -41,6 +41,23 @@ Computer Graphics w/ JonAlf Dyrland-Weaver at Stuyvesant 2019-2020
   - `f'(0) = c`: R_0
   - `f(1) = a + b + c + d` : P_1
   - `f'(1) = 3a + 2b + c` : R_1
+
+```plaintext
+matrix H   * matrix C  ->      matrix G
+[ 0 0 0 1 ]    [a]         [       d       ] (P_0)
+[ 1 1 1 1 ]    [b]     ->  [ a + b + c + d ] (R_0)
+[ 0 0 1 0 ]    [c]         [       c       ] (P_1)
+[ 3 2 1 0 ]    [d]         [  3a + 2b + c  ] (R_1)
+
+H * C = G
+C = H^(-1) * G
+
+     H^(-1)    *  G   =                 C
+[  2 -2  1  1 ] [P_0]   [  2P_0 - 2P_1 +  R_0 + R_1 ] (a)
+[ -3  3 -2 -1 ] [P_1]   [ -3P_0 + 3P_1 - 2R_0 - R_1 ] (b)
+[  0  0  1  0 ] [R_0]   [             R_0           ] (c)
+[  1  0  0  0 ] [R_1]   [             P_0           ] (d)
+```
 
 ## Monday, 02 March 2020
 
