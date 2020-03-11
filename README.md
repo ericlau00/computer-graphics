@@ -2,6 +2,33 @@
 
 Computer Graphics w/ JonAlf Dyrland-Weaver at Stuyvesant 2019-2020
 
+## Wednesday, 11 March 2020
+
+## 3D Shapes
+
+### Box
+
+- Given
+  - vertex (front-top-left)
+  - Length, height, depth (x, y, z)
+- Defining points are 8 vertices
+
+### Sphere
+
+- Given
+  - center
+  - radius
+- Defining points are points on surface
+
+```plaintext
+x rotation        circle        sphere
+[ 1  0     0   ] [ rcosθ ]   [   rcosθ   ]
+[ 0 cosΦ -sinΦ ] [ rsinθ ] = [ rsinθcosΦ ]
+[ 0 sinΦ  cosΦ ] [   0   ]   [ rsinθsinΦ ]
+```
+
+### Torus
+
 ## Tuesday, Thursday, Friday 03, 05, 06 March 2020
 
 ## Curves
