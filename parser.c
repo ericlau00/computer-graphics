@@ -103,13 +103,12 @@ void parse_file ( char * filename,
       fgets(line, sizeof(line), f);
 
       sscanf(line, "%lf %lf %lf %lf", xvals, yvals, zvals, &radius);
-
-      add_circle(edges, xvals[0], yvals[0], zvals[0], radius, 0.01);
+      add_circle(edges, xvals[0], yvals[0], zvals[0], radius, 0.001);
     }
     else if ( strncmp(line, "hermite", strlen(line)) == 0) {
       fgets(line, sizeof(line), f);
 
-      make_hermite();
+      // make_hermite();
 
       sscanf(line, "%lf %lf %lf %lf %lf %lf %lf %lf", xvals, yvals, xvals + 1, yvals + 1, xrate, yrate, xrate + 1, yrate + 1);
 
@@ -117,7 +116,7 @@ void parse_file ( char * filename,
     else if ( strncmp(line, "bezier", strlen(line)) == 0) {
       fgets(line, sizeof(line), f);
 
-      make_bezier();
+      // make_bezier();
 
       sscanf(line, "%lf %lf %lf %lf %lf %lf %lf %lf", xvals, yvals, xvals + 1, yvals + 1, xvals + 2, yvals + 2, xvals + 3, yvals + 3);
 

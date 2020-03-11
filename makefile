@@ -3,6 +3,9 @@ CFLAGS= -Wall
 LDFLAGS= -lm
 CC= gcc
 
+test: all
+	./main test
+
 run: all
 	./main script
 
