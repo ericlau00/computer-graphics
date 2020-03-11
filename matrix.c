@@ -31,7 +31,6 @@ struct matrix * make_bezier() {
     t->m[2][2] = 3;
     t->m[2][3] = -3;
     t->m[3][3] = 1;
-    print_matrix(t);
     return t;
 }
 
@@ -53,7 +52,6 @@ struct matrix * make_hermite() {
   t->m[2][2] = 1;
   t->m[3][0] = 1;
   t->m[3][3] = 0;
-  print_matrix(t);
   return t;
 }
 

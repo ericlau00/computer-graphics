@@ -3,11 +3,11 @@ CFLAGS= -Wall
 LDFLAGS= -lm
 CC= gcc
 
-test: all
-	./main test
-
 run: all
 	./main script
+
+test: all
+	./main test
 
 all: $(OBJECTS)
 	$(CC) -o main $(OBJECTS) $(LDFLAGS)
