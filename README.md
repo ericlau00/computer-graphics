@@ -2,7 +2,7 @@
 
 Computer Graphics w/ JonAlf Dyrland-Weaver at Stuyvesant 2019-2020
 
-## Wednesday, 11 March 2020
+## Wednesday, Thursday 11, 12 March 2020
 
 ## 3D Shapes
 
@@ -25,9 +25,43 @@ x rotation        circle        sphere
 [ 1  0     0   ] [ rcosθ ]   [   rcosθ   ]
 [ 0 cosΦ -sinΦ ] [ rsinθ ] = [ rsinθcosΦ ]
 [ 0 sinΦ  cosΦ ] [   0   ]   [ rsinθsinΦ ]
+
+θ: angle used to generate circle 0 - 2PI OR 0 - PI
+Φ: rotation angle for sphere     0 - PI  OR 0 - 2PI
+
+for Φ: 0 - 2PI
+  for θ: 0 - PI
+    x = rcosθ + cx
+    y = rsinθcosΦ + cy
+    z = rsinθsinΦ + cz
+
+for rot: 0 - 1
+  for circ: 0 - 1
+    x = rcos(circ * PI) + cx
+    y = rsin(circ * PI)cos(rot * 2PI) + cy
+    z = rsin(circ * PI)sin(rot * 2PI) + cz
 ```
 
 ### Torus
+
+- Givens
+  - Center
+  - Distance from center to center of a crosssection (R)
+  - Radius of the cross section (r)
+- Defining points
+  - points on the surface
+- Torus = Circle + Translation + Rotation
+
+```plaintext
+translation rotation
+      x        y
+      y        x
+
+y rotation     circle + translations         torus x y z
+cosΦ 0 sinΦ        rcosθ + R            cosΦ(rcosθ + R)   + cx
+0 1 0              rsinθ + R            rsinθ             + cy
+-sinΦ 0 cosΦ          0                -sinΦ(rcosθ + R )  + cz
+```
 
 ## Tuesday, Thursday, Friday 03, 05, 06 March 2020
 
