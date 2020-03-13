@@ -33,6 +33,10 @@ void add_box( struct matrix * edges,
   add_edge(edges, x, y - height, z, x + width, y - height, z);
   add_edge(edges, x, y - height, z, x, y - height, z - depth);
   add_edge(edges, x + width, y - height, z, x + width, y - height, z - depth);
+  add_edge(edges, x + width, y - height, z - depth, x + width, y, z - depth);
+  add_edge(edges, x, y - height, z - depth, x, y, z - depth);
+  add_edge(edges, x + width, y - height, z - depth, x, y - height, z - depth);
+  add_edge(edges, x + width, y, z - depth, x, y, z- depth);
 }
 
 /*======== void add_sphere() ==========
