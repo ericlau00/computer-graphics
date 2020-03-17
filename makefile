@@ -9,6 +9,9 @@ run: all
 test: all
 	./main test
 
+gallery: all
+	./main gallery
+
 all: $(OBJECTS)
 	$(CC) -o main $(OBJECTS) $(LDFLAGS)
 
