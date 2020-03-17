@@ -1,12 +1,16 @@
-box
-0 0 0 200 100 400
+sphere
+0 0 0 200
 ident
+move
+-250 -250 0
 rotate
-x 20
+x -60
 rotate
 y 20
+rotate
+z 70
 move
-150 200 0
+250 250 0
 apply
 save
 test.png
