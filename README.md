@@ -1,6 +1,6 @@
 # Work 05: A whole new dimension
 
-## Due:
+## Due: Wednesday 03/18/2020 8:00am
 
 GitHub link: <https://github.com/mks66/3d.git>
 
