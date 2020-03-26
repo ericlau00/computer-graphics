@@ -1,12 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "gmath.h"
 #include "ml6.h"
 #include "display.h"
 #include "draw.h"
 #include "matrix.h"
 #include "math.h"
-
 
 /*======== void add_polygon() ==========
   Inputs:   struct matrix *polygons
@@ -42,6 +42,8 @@ void add_polygon( struct matrix *polygons,
   lines connecting each points to create bounding triangles
   ====================*/
 void draw_polygons( struct matrix *polygons, screen s, color c ) {
+  double view[3] = {0, 0, 1};
+
   if ( polygons->lastcol < 3 ) {
    printf("Need at least 3 points to draw a polygon!\n");
    return;
@@ -49,21 +51,24 @@ void draw_polygons( struct matrix *polygons, screen s, color c ) {
 
  int point;
  for (point=0; point < polygons->lastcol-1; point+=3) {
-   draw_line(polygons->m[0][point],
+   double theta = dot_product(calculate_normal(polygons, point), view);
+   if(theta >= 0) {
+     draw_line(polygons->m[0][point],
         polygons->m[1][point],
         polygons->m[0][point+1],
         polygons->m[1][point+1],
         s,c);
-  draw_line(polygons->m[0][point+1],
-        polygons->m[1][point+1],
-        polygons->m[0][point+2],
-        polygons->m[1][point+2],
-        s,c);
-  draw_line(polygons->m[0][point+2],
-        polygons->m[1][point+2],
-        polygons->m[0][point],
-        polygons->m[1][point],
-        s,c);
+    draw_line(polygons->m[0][point+1],
+          polygons->m[1][point+1],
+          polygons->m[0][point+2],
+          polygons->m[1][point+2],
+          s,c);
+    draw_line(polygons->m[0][point+2],
+          polygons->m[1][point+2],
+          polygons->m[0][point],
+          polygons->m[1][point],
+          s,c);
+   }
  }
 }
 
