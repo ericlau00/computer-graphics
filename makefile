@@ -6,6 +6,12 @@ CC= gcc
 run: all
 	./main script
 
+test: all
+	./main test
+
+gallery: all
+	./main gallery
+
 all: $(OBJECTS)
 	$(CC) -o main $(OBJECTS) $(LDFLAGS)
 

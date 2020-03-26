@@ -17,3 +17,12 @@ GitHub link: <https://github.com/mks66/polygons.git>
   - Modify add box, add sphere and add torus to add triangles instead of points.
   - Make sure the parser calls the draw_polygons functions when needed instead of draw_lines
 There will be an addition to this assignment posted in a few days
+
+- Relevant notes: Sections 4-5
+- Implement the following vector functions
+- Find the dot product of 2 vectors (provided as arrays/lists of 3 values)
+- Calculate the surface normal of a triangle in the polygon matrix (provided the polygon matrix and index.
+- Check out gmath.h/c or gmath.py for headers and comments.
+  - There are funtion headers listed for normalizing a vector, you can ignore those if you want.
+  - We won’t be needing that functionality until we get to lighting & shading.
+- Implement Backface culling.
