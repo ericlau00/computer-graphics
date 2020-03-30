@@ -1,0 +1,184 @@
+sphere
+250 325 0 70
+torus
+250 140 0 10 51
+torus
+250 150 0 10 51
+torus
+250 160 0 10 50
+torus
+250 170 0 10 50
+torus
+250 180 0 10 49
+torus
+250 190 0 10 49
+torus
+250 170 0 10 48
+torus
+250 180 0 10 47
+torus
+250 190 0 10 47
+torus
+250 200 0 10 47
+torus
+250 210 0 10 46
+torus
+250 220 0 10 46
+torus
+250 200 0 10 46
+torus
+250 210 0 10 44
+torus
+250 220 0 10 44
+torus
+250 225 0 10 44
+torus
+250 230 0 10 43
+torus
+250 235 0 10 42
+torus
+250 245 0 10 42
+torus
+250 255 0 10 42
+torus
+250 265 0 10 40
+ident
+move
+130 0 0
+apply
+torus
+130 140 0 10 51
+torus
+130 150 0 10 51
+torus
+130 160 0 10 50
+torus
+130 170 0 10 50
+torus
+130 180 0 10 49
+torus
+130 190 0 10 49
+torus
+130 170 0 10 48
+torus
+130 180 0 10 47
+torus
+130 190 0 10 47
+torus
+130 200 0 10 47
+torus
+130 210 0 10 46
+torus
+130 220 0 10 46
+torus
+130 200 0 10 46
+torus
+130 210 0 10 44
+torus
+130 220 0 10 44
+torus
+130 225 0 10 43
+torus
+130 230 0 10 43
+torus
+130 235 0 10 42
+torus
+130 245 0 10 42
+torus
+130 255 0 10 41
+torus
+130 265 0 10 40
+torus
+130 275 0 10 40
+torus
+130 285 0 10 41
+torus
+130 295 0 10 41
+torus
+130 305 0 10 42
+torus
+124 315 0 10 50
+torus
+124 325 0 10 55
+torus
+124 335 0 10 57
+torus
+155 430 0 5 5
+torus
+155 420 0 5 5
+torus
+155 410 0 5 5
+torus
+155 400 0 5 5
+torus
+155 390 0 5 5
+torus
+155 380 0 5 5
+torus
+155 370 0 5 5
+torus
+155 360 0 5 5
+torus
+155 350 0 5 5
+torus
+180 380 0 5 5
+torus
+180 370 0 5 5
+torus
+180 360 0 5 5
+torus
+180 350 0 5 5
+torus
+180 340 0 5 5
+torus
+65 380 0 5 5
+torus
+65 370 0 5 5
+torus
+65 360 0 5 5
+torus
+65 350 0 5 5
+torus
+95 420 0 5 5
+torus
+95 410 0 5 5
+torus
+95 400 0 5 5
+torus
+95 390 0 5 5
+torus
+95 380 0 5 5
+torus
+95 370 0 5 5
+torus
+95 360 0 5 5
+torus
+95 350 0 5 5
+torus
+125 450 0 5 5
+torus
+125 440 0 5 5
+torus
+125 430 0 5 5
+torus
+125 420 0 5 5
+torus
+125 410 0 5 5
+torus
+125 400 0 5 5
+torus
+125 390 0 5 5
+torus
+125 380 0 5 5
+torus
+125 370 0 5 5
+torus
+125 360 0 5 5
+torus
+125 350 0 5 5
+ident
+move
+0 -130 0
+apply
+save
+gallery.png

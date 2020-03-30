@@ -99,7 +99,7 @@ void parse_file ( char * filename,
     double theta;
     char axis;
     int type;
-    int steps_3d = 10;
+    int steps_3d = 20;
     int steps_2d = 100;
 
     if ( strncmp(line, "box", strlen(line)) == 0 ) {

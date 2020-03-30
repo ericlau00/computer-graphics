@@ -52,7 +52,7 @@ void draw_polygons( struct matrix *polygons, screen s, color c ) {
  int point;
  for (point=0; point < polygons->lastcol-1; point+=3) {
    double theta = dot_product(calculate_normal(polygons, point), view);
-   if(theta >= 0) {
+   if(theta > 0) {
      draw_line(polygons->m[0][point],
         polygons->m[1][point],
         polygons->m[0][point+1],
