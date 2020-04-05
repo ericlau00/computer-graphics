@@ -109,14 +109,11 @@ void parse_file ( char * filename,
     int step = 100;
 
     if(strncmp(line, "push", strlen(line)) == 0) {
-      // print_stack(csystems);
       push(csystems);
-      // print_stack(csystems);
     }
 
     if(strncmp(line, "pop", strlen(line)) == 0) {
       pop(csystems);
-      // print_stack(csystems);
     }
 
     else if ( strncmp(line, "box", strlen(line)) == 0 ) {
