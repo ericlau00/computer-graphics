@@ -1,4 +1,4 @@
-# Work 08: Let's see how your code stacks up to the competition
+# Work 07: Let's see how your code stacks up to the competition
 
 ## Due: Monday 04/06 10:00am
 
