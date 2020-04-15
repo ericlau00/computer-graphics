@@ -180,7 +180,7 @@ void parse_file ( char * filename,
         type = HERMITE;
       else
         type = BEZIER;
-      
+
       fgets(line, sizeof(line), f);
       //printf("CURVE\t%s", line);
 
@@ -192,7 +192,7 @@ void parse_file ( char * filename,
           /*       xvals[1], yvals[1], */
           /*       xvals[2], yvals[2], */
           /*       xvals[3], yvals[3]); */
-      
+
           //printf("%d\n", type);
           add_curve( edges, xvals[0], yvals[0], xvals[1], yvals[1],
                      xvals[2], yvals[2], xvals[3], yvals[3], step, type);
@@ -228,7 +228,7 @@ void parse_file ( char * filename,
           matrix_mult(peek(csystems), tmp);
           copy_matrix(tmp, peek(csystems));
         }//end scale
-    
+
     else if ( strncmp(line, "move", strlen(line)) == 0 ) {
       fgets(line, sizeof(line), f);
       //printf("MOVE\t%s", line);
@@ -289,7 +289,7 @@ void parse_file ( char * filename,
       fgets(line, sizeof(line), f);
       *strchr(line, '\n') = 0;
       //printf("name: %s\n", line);
-      //clear_screen(s);
+      // clear_screen(s);
       save_extension(s, line);
     }//end save
   }
