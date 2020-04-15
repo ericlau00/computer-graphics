@@ -38,9 +38,9 @@ void scanline_convert( struct matrix *points, int i, screen s, zbuffer zb ) {
   yt = points->m[1][maxInt];
 
   color c;
-  c.red = (i + 100)% 255;
-  c.green = (i + 100) % 255;
-  c.blue = (i + 100) % 255;
+  c.red = i * 20 % 255;
+  c.green = i * 7 % 255;
+  c.blue = i * 4 % 255;
 
   x0 = xb;
   x1 = xb;
@@ -48,23 +48,22 @@ void scanline_convert( struct matrix *points, int i, screen s, zbuffer zb ) {
 
   dx0 = (xt - xb) / (yt - yb);
   dx1 = (xm - xb) / (ym - yb);
-  dx1_flip = (xt - xm) / (yt - yb);
+  dx1_flip = (xt - xm) / (yt - ym);
 
-  while(y < yt) {
+  int flip = 0;
+
+  while(y <= yt) {
     draw_line(x0, y, 0, x1, y, 0, s, zb, c);
     x0 += dx0;
     x1 += dx1;
     y++;
 
-    if(y >= ym) {
+    if(y >= ym && !flip) {
       dx1 = dx1_flip;
       x1 = xm;
+      flip = 1;
     }
   }
-
-  // printf("%lf\n", dx0);
-
-  // printf("min(%lf, %d), mid(%lf, %d), max(%lf, %d)\n", yb, minInt, ym, midInt, yt, maxInt);
 }
 
 int max(struct matrix *points, int n0, int n1) {
@@ -190,24 +189,24 @@ void add_box( struct matrix *polygons,
 
   //front
   add_polygon(polygons, x, y, z, x1, y1, z, x1, y, z);
-  add_polygon(polygons, x, y, z, x, y1, z, x1, y1, z);
+  // add_polygon(polygons, x, y, z, x, y1, z, x1, y1, z);
   //back
-//   add_polygon(polygons, x1, y, z1, x, y1, z1, x, y, z1);
-//   add_polygon(polygons, x1, y, z1, x1, y1, z1, x, y1, z1);
+  // add_polygon(polygons, x1, y, z1, x, y1, z1, x, y, z1);
+  // add_polygon(polygons, x1, y, z1, x1, y1, z1, x, y1, z1);
 
-//   //right side
-//   add_polygon(polygons, x1, y, z, x1, y1, z1, x1, y, z1);
-//   add_polygon(polygons, x1, y, z, x1, y1, z, x1, y1, z1);
-//   //left side
-//   add_polygon(polygons, x, y, z1, x, y1, z, x, y, z);
-//   add_polygon(polygons, x, y, z1, x, y1, z1, x, y1, z);
+  //right side
+  // add_polygon(polygons, x1, y, z, x1, y1, z1, x1, y, z1);
+  // add_polygon(polygons, x1, y, z, x1, y1, z, x1, y1, z1);
+  //left side
+  // add_polygon(polygons, x, y, z1, x, y1, z, x, y, z);
+  // add_polygon(polygons, x, y, z1, x, y1, z1, x, y1, z);
 
-//   //top
-//   add_polygon(polygons, x, y, z1, x1, y, z, x1, y, z1);
-//   add_polygon(polygons, x, y, z1, x, y, z, x1, y, z);
-//   //bottom
-//   add_polygon(polygons, x, y1, z, x1, y1, z1, x1, y1, z);
-//   add_polygon(polygons, x, y1, z, x, y1, z1, x1, y1, z1);
+  //top
+  // add_polygon(polygons, x, y, z1, x1, y, z, x1, y, z1);
+  add_polygon(polygons, x, y, z1, x, y, z, x1, y, z);
+  //bottom
+  // add_polygon(polygons, x, y1, z, x1, y1, z1, x1, y1, z);
+  // add_polygon(polygons, x, y1, z, x, y1, z1, x1, y1, z1);
 }
 
 
