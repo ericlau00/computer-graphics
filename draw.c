@@ -30,6 +30,14 @@ void scanline_convert( struct matrix *points, int i, screen s, zbuffer zb ) {
   int minInt = min(points, min(points, i, i+1), i+2);
   int midInt = mid(i, maxInt, minInt);
 
+  if(minInt == midInt && minInt == i + 1) {
+    midInt--;
+  }
+
+  if(midInt == maxInt && midInt == i + 1) {
+    midInt++;
+  }
+
   xb = points->m[0][minInt];
   yb = points->m[1][minInt];
   xm = points->m[0][midInt];
@@ -43,7 +51,7 @@ void scanline_convert( struct matrix *points, int i, screen s, zbuffer zb ) {
   c.blue = i * 4 % 255;
 
   x0 = xb;
-  x1 = xb;
+  x1 = (yb == ym) ? xm : xb;
   y = yb;
 
   dx0 = (xt - xb) / (yt - yb);
@@ -134,30 +142,7 @@ void draw_polygons( struct matrix *polygons, screen s, zbuffer zb, color c ) {
     normal = calculate_normal(polygons, point);
 
     if ( normal[2] > 0 ) {
-
       scanline_convert(polygons, point, s, zb);
-
-      // draw_line( polygons->m[0][point],
-      //            polygons->m[1][point],
-      //            polygons->m[2][point],
-      //            polygons->m[0][point+1],
-      //            polygons->m[1][point+1],
-      //            polygons->m[2][point+1],
-      //            s, zb, c);
-      // draw_line( polygons->m[0][point+2],
-      //            polygons->m[1][point+2],
-      //            polygons->m[2][point+2],
-      //            polygons->m[0][point+1],
-      //            polygons->m[1][point+1],
-      //            polygons->m[2][point+1],
-      //            s, zb, c);
-      // draw_line( polygons->m[0][point],
-      //            polygons->m[1][point],
-      //            polygons->m[2][point],
-      //            polygons->m[0][point+2],
-      //            polygons->m[1][point+2],
-      //            polygons->m[2][point+2],
-      //            s, zb, c);
     }
   }
 }
@@ -188,25 +173,25 @@ void add_box( struct matrix *polygons,
 
 
   //front
+  add_polygon(polygons, x, y, z, x, y1, z, x1, y1, z);
   add_polygon(polygons, x, y, z, x1, y1, z, x1, y, z);
-  // add_polygon(polygons, x, y, z, x, y1, z, x1, y1, z);
   //back
-  // add_polygon(polygons, x1, y, z1, x, y1, z1, x, y, z1);
-  // add_polygon(polygons, x1, y, z1, x1, y1, z1, x, y1, z1);
+  add_polygon(polygons, x1, y, z1, x, y1, z1, x, y, z1);
+  add_polygon(polygons, x1, y, z1, x1, y1, z1, x, y1, z1);
 
   //right side
-  // add_polygon(polygons, x1, y, z, x1, y1, z1, x1, y, z1);
-  // add_polygon(polygons, x1, y, z, x1, y1, z, x1, y1, z1);
+  add_polygon(polygons, x1, y, z, x1, y1, z1, x1, y, z1);
+  add_polygon(polygons, x1, y, z, x1, y1, z, x1, y1, z1);
   //left side
-  // add_polygon(polygons, x, y, z1, x, y1, z, x, y, z);
-  // add_polygon(polygons, x, y, z1, x, y1, z1, x, y1, z);
+  add_polygon(polygons, x, y, z1, x, y1, z, x, y, z);
+  add_polygon(polygons, x, y, z1, x, y1, z1, x, y1, z);
 
   //top
-  // add_polygon(polygons, x, y, z1, x1, y, z, x1, y, z1);
   add_polygon(polygons, x, y, z1, x, y, z, x1, y, z);
+  add_polygon(polygons, x, y, z1, x1, y, z, x1, y, z1);
   //bottom
-  // add_polygon(polygons, x, y1, z, x1, y1, z1, x1, y1, z);
-  // add_polygon(polygons, x, y1, z, x, y1, z1, x1, y1, z1);
+  add_polygon(polygons, x, y1, z, x1, y1, z1, x1, y1, z);
+  add_polygon(polygons, x, y1, z, x, y1, z1, x1, y1, z1);
 }
 
 
@@ -382,7 +367,7 @@ void add_torus( struct matrix * edges,
       p2 = (p1 + step) % (step * step);
       p3 = (p0 + step) % (step * step);
 
-      //printf("p0: %d\tp1: %d\tp2: %d\tp3: %d\n", p0, p1, p2, p3);
+      // printf("p0: %d\tp1: %d\tp2: %d\tp3: %d\n", p0, p1, p2, p3);
       add_polygon( edges, points->m[0][p0],
                    points->m[1][p0],
                    points->m[2][p0],
@@ -443,8 +428,8 @@ struct matrix * generate_torus( double cx, double cy, double cz,
       z = -1*sin(2*M_PI * rot) *
         (r1 * cos(2*M_PI * circ) + r2) + cz;
 
-      //printf("rotation: %d\tcircle: %d\n", rotation, circle);
-      //printf("torus point: (%0.2f, %0.2f, %0.2f)\n", x, y, z);
+      // printf("rotation: %d\tcircle: %d\n", rotation, circle);
+      // printf("torus point: (%0.2f, %0.2f, %0.2f)\n", x, y, z);
       add_point(points, x, y, z);
     }
   }
