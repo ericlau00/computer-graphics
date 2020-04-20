@@ -19,12 +19,12 @@
 
   Color should be set differently for each polygon.
   ====================*/
-void scanline_convert( struct matrix *points, int i, screen s, zbuffer zb ) {
+void scanline_convert( struct matrix *points, int i, screen s, zbuffer zbuff ) {
   double y0 = points->m[1][i];
   double y1 = points->m[1][i+1];
   double y2 = points->m[1][i+2];
 
-  double x0, x1, y, xt, xm, xb, yt, ym, yb, dx0, dx1, dx1_flip;
+  double x0, x1, y, z0, z1, xt, xm, xb, yt, ym, yb, zt, zm, zb, dx0, dx1, dx1_flip, dz0, dz1, dz1_flip;
 
   int maxInt = max(points, max(points, i, i+1), i+2);
   int minInt = min(points, min(points, i, i+1), i+2);
@@ -40,10 +40,13 @@ void scanline_convert( struct matrix *points, int i, screen s, zbuffer zb ) {
 
   xb = points->m[0][minInt];
   yb = points->m[1][minInt];
+  zb = points->m[2][minInt];
   xm = points->m[0][midInt];
   ym = points->m[1][midInt];
+  zm = points->m[2][midInt];
   xt = points->m[0][maxInt];
   yt = points->m[1][maxInt];
+  zt = points->m[2][maxInt];
 
   color c;
   c.red = i * 20 % 255;
@@ -53,22 +56,31 @@ void scanline_convert( struct matrix *points, int i, screen s, zbuffer zb ) {
   x0 = xb;
   x1 = (yb == ym) ? xm : xb;
   y = yb;
+  z0 = zb;
+  z1 = (zb == zm) ? zm : zb;
 
   dx0 = (xt - xb) / (yt - yb);
   dx1 = (xm - xb) / (ym - yb);
   dx1_flip = (xt - xm) / (yt - ym);
+  dz0 = (zt - zb) / (yt - yb);
+  dz1 = (zm - zb) / (ym - yb);
+  dz1_flip = (zt - zm) / (yt - ym);
 
   int flip = 0;
 
-  while(y <= yt) {
-    draw_line(x0, y, 0, x1, y, 0, s, zb, c);
+  while(y <= ceil(yt)) {
+    draw_line(x0, y, z0, x1, y, z1, s, zbuff, c);
     x0 += dx0;
     x1 += dx1;
+    z0 += dz0;
+    z1 += dz1;
     y++;
 
     if(y >= ym && !flip) {
       dx1 = dx1_flip;
       x1 = xm;
+      dz1 = dz1_flip;
+      z1 = zm;
       flip = 1;
     }
   }
@@ -591,20 +603,25 @@ void draw_line(int x0, int y0, double z0,
   int dy_east, dy_northeast, dx_east, dx_northeast, d_east, d_northeast;
   int loop_start, loop_end;
 
+  double z, dz, zt;
+
   //swap points if going right -> left
   int xt, yt;
   if (x0 > x1) {
     xt = x0;
     yt = y0;
+    zt = z0;
     x0 = x1;
     y0 = y1;
     z0 = z1;
     x1 = xt;
     y1 = yt;
+    z1 = zt;
   }
 
   x = x0;
   y = y0;
+  z = z0;
   A = 2 * (y1 - y0);
   B = -2 * (x1 - x0);
   int wide = 0;
@@ -650,9 +667,26 @@ void draw_line(int x0, int y0, double z0,
     }
   }
 
+  int pixels;
+  if(wide) {
+    pixels = x1 - x0;
+  }
+  else if(tall) {
+    pixels = y1 - y0;
+  }
+  if(pixels == 0) {
+    dz = 0;
+    if(z1 > z0) {
+      z = z1;
+    }
+  } else {
+    dz = (z1 - z0) / pixels;
+  }
+
+
   while ( loop_start < loop_end ) {
 
-    plot( s, zb, c, x, y, 0);
+    plot( s, zb, c, x, y, z);
     if ( (wide && ((A > 0 && d > 0) ||
                    (A < 0 && d < 0)))
          ||
@@ -667,7 +701,8 @@ void draw_line(int x0, int y0, double z0,
       y+= dy_east;
       d+= d_east;
     }
+    z += dz;
     loop_start++;
   } //end drawing loop
-  plot( s, zb, c, x1, y1, 0 );
+  plot( s, zb, c, x1, y1, z1 );
 } //end draw_line
