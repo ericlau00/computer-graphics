@@ -20,23 +20,15 @@
   Color should be set differently for each polygon.
   ====================*/
 void scanline_convert( struct matrix *points, int i, screen s, zbuffer zbuff ) {
-  double y0 = points->m[1][i];
-  double y1 = points->m[1][i+1];
-  double y2 = points->m[1][i+2];
-
   double x0, x1, y, z0, z1, xt, xm, xb, yt, ym, yb, zt, zm, zb, dx0, dx1, dx1_flip, dz0, dz1, dz1_flip;
 
   int maxInt = max(points, max(points, i, i+1), i+2);
   int minInt = min(points, min(points, i, i+1), i+2);
   int midInt = mid(i, maxInt, minInt);
 
-  if(minInt == midInt && minInt == i + 1) {
-    midInt--;
-  }
+  if(minInt == midInt && minInt == i + 1) midInt--;
 
-  if(midInt == maxInt && midInt == i + 1) {
-    midInt++;
-  }
+  if(midInt == maxInt && midInt == i + 1) midInt++;
 
   xb = points->m[0][minInt];
   yb = points->m[1][minInt];
@@ -68,7 +60,7 @@ void scanline_convert( struct matrix *points, int i, screen s, zbuffer zbuff ) {
 
   int flip = 0;
 
-  while(y <= ceil(yt)) {
+  while(y <= yt) {
     draw_line(x0, y, z0, x1, y, z1, s, zbuff, c);
     x0 += dx0;
     x1 += dx1;
@@ -76,7 +68,7 @@ void scanline_convert( struct matrix *points, int i, screen s, zbuffer zbuff ) {
     z1 += dz1;
     y++;
 
-    if(y >= ym && !flip) {
+    if(!flip && y > (int) ym) {
       dx1 = dx1_flip;
       x1 = xm;
       dz1 = dz1_flip;
@@ -100,11 +92,6 @@ int mid(int i, int maxInt, int minInt) {
     : (i + 1 == maxInt && i + 2 == minInt)
       ? i
       : i + 1;
-}
-
-void scanline_draw_line( int x0, int y0, double z0,
-               int x1, int y1, double z1,
-               screen s, zbuffer zb, color c ) {
 }
 
 /*======== void add_polygon() ==========
@@ -597,8 +584,6 @@ void draw_line(int x0, int y0, double z0,
                int x1, int y1, double z1,
                screen s, zbuffer zb, color c) {
 
-
-
   int x, y, d, A, B;
   int dy_east, dy_northeast, dx_east, dx_northeast, d_east, d_northeast;
   int loop_start, loop_end;
@@ -644,6 +629,7 @@ void draw_line(int x0, int y0, double z0,
       dy_northeast = -1;
       d_northeast = A - B;
     }
+    dz = (z1 - z0) / (x1 - x0);
   }//end octant 1/8
   else { //octant 2/7
     tall = 1;
@@ -665,24 +651,8 @@ void draw_line(int x0, int y0, double z0,
       loop_start = y1;
       loop_end = y;
     }
+    dz = (z1 - z0) / (y1 - y0);
   }
-
-  int pixels;
-  if(wide) {
-    pixels = x1 - x0;
-  }
-  else if(tall) {
-    pixels = y1 - y0;
-  }
-  if(pixels == 0) {
-    dz = 0;
-    if(z1 > z0) {
-      z = z1;
-    }
-  } else {
-    dz = (z1 - z0) / pixels;
-  }
-
 
   while ( loop_start < loop_end ) {
 
