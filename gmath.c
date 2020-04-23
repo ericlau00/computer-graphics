@@ -25,27 +25,72 @@
 //lighting functions
 color get_lighting( double *normal, double *view, color alight, double light[2][3], double *areflect, double *dreflect, double *sreflect) {
   color i;
+  color i_a = calculate_ambient(alight, areflect);
+  color i_d = calculate_diffuse(light, dreflect, normal);
+  color i_s = calculate_specular(light, sreflect, view, normal);
+  i.blue = i_a.blue + i_d.blue + i_s.blue;
+  i.green = i_a.green + i_d.green + i_s.green;
+  i.red = i_a.red + i_d.red + i_s.red;
+  limit_color(&i);
   return i;
 }
 
 color calculate_ambient(color alight, double *areflect ) {
   color a;
+  a.blue = alight.blue * *areflect;
+  a.green = alight.green * *areflect;
+  a.red = alight.red * *areflect;
   return a;
 }
 
 color calculate_diffuse(double light[2][3], double *dreflect, double *normal ) {
   color d;
+  normalize(normal);
+  normalize(light[0]);
+  double cos_theta = dot_product(normal, light[0]);
+  if(cos_theta < 0) {
+    cos_theta = 0;
+  }
+  double x = *dreflect * cos_theta;
+  d.red = light[1][0] * x;
+  d.green = light[1][1] * x;
+  d.blue = light[1][2] * x;
   return d;
 }
 
 color calculate_specular(double light[2][3], double *sreflect, double *view, double *normal ) {
-
   color s;
+  normalize(normal);
+  normalize(light[0]);
+  double product = dot_product(normal, light[0]);
+  if (product < 0) {
+    product = 0;
+  }
+  double * reflection = (double *)malloc(3 * sizeof(double));
+  reflection[0] = 2 * normal[0] * (product) - light[0][0];
+  reflection[1] = 2 * normal[1] * (product) - light[0][1];
+  reflection[2] = 2 * normal[2] * (product) - light[0][2];
+  normalize(reflection);
+  normalize(view);
+  double cos_alpha = dot_product(reflection, view);
+  double x = *sreflect * pow(cos_alpha, 8);
+  s.red = light[1][0] * x;
+  s.green = light[1][1] * x;
+  s.blue = light[1][2] * x;
   return s;
 }
 
 //limit each component of c to a max of 255
 void limit_color( color * c ) {
+  if(c->blue > 255) {
+    c->blue = 255;
+  }
+  if(c->green > 255) {
+    c->green = 255;
+  }
+  if(c->red > 255) {
+    c->red = 255;
+  }
 }
 
 //vector functions
