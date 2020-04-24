@@ -48,9 +48,7 @@ color calculate_diffuse(double light[2][3], double *dreflect, double *normal ) {
   normalize(normal);
   normalize(light[0]);
   double cos_theta = dot_product(normal, light[0]);
-  if(cos_theta < 0) {
-    cos_theta = 0;
-  }
+  if(cos_theta < 0) cos_theta = 0;
   double x = *dreflect * cos_theta;
   d.red = light[1][0] * x;
   d.green = light[1][1] * x;
@@ -63,9 +61,7 @@ color calculate_specular(double light[2][3], double *sreflect, double *view, dou
   normalize(normal);
   normalize(light[0]);
   double product = dot_product(normal, light[0]);
-  if (product < 0) {
-    product = 0;
-  }
+  if (product < 0) product = 0;
   double * reflection = (double *)malloc(3 * sizeof(double));
   reflection[0] = 2 * normal[0] * (product) - light[0][0];
   reflection[1] = 2 * normal[1] * (product) - light[0][1];
