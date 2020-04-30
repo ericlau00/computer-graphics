@@ -57,7 +57,7 @@ void my_main() {
   screen t;
   zbuffer zb;
   color g;
-  double step_3d = 20;
+  double step_3d = 200;
   double theta;
 
   //Lighting values here for easy access
@@ -71,7 +71,7 @@ void my_main() {
   light[LOCATION][1] = 0.75;
   light[LOCATION][2] = 1;
 
-  light[COLOR][RED] = 0;
+  light[COLOR][RED] = 255;
   light[COLOR][GREEN] = 255;
   light[COLOR][BLUE] = 255;
 
@@ -107,10 +107,201 @@ void my_main() {
   g.blue = 0;
 
   print_symtab();
-  for (i=0;i<lastop;i++) {
+  for (i=0;i<lastop;i++)
+    {
+      switch (op[i].opcode)
+        {
+        case SPHERE:
+          add_sphere(tmp,
+            op[i].op.sphere.d[0],
+            op[i].op.sphere.d[1],
+            op[i].op.sphere.d[2],
+            op[i].op.sphere.r,
+            step_3d
+          );
+          matrix_mult(peek(systems), tmp);
+          if (op[i].op.sphere.constants != NULL)
+            {
+              struct constants * constant = op[i].op.sphere.constants->s.c;
+              g.red = constant->red;
+              g.green = constant->green;
+              g.blue = constant->blue;
+              draw_polygons(tmp, t, zb, view, light, g, constant);
+            }
+          else {
+            draw_polygons(tmp, t, zb, view, light, ambient, reflect);
+          }
+          tmp->lastcol = 0;
+          break;
+        case TORUS:
+          add_torus(tmp,
+            op[i].op.torus.d[0],
+            op[i].op.torus.d[1],
+            op[i].op.torus.d[2],
+            op[i].op.torus.r0,
+            op[i].op.torus.r1,
+            step_3d
+          );
+          matrix_mult(peek(systems), tmp);
+          if (op[i].op.torus.constants != NULL)
+            {
+              struct constants * constant = op[i].op.torus.constants->s.c;
+              g.red = constant->red;
+              g.green = constant->green;
+              g.blue = constant->blue;
+              draw_polygons(tmp, t, zb, view, light, g, constant);
+            }
+          else {
+            draw_polygons(tmp, t, zb, view, light, ambient, reflect);
+          }
+          tmp->lastcol = 0;
+          break;
+        case BOX:
+          add_box(tmp,
+            op[i].op.box.d0[0],
+            op[i].op.box.d0[1],
+            op[i].op.box.d0[2],
+            op[i].op.box.d1[0],
+            op[i].op.box.d1[1],
+            op[i].op.box.d1[2]);
+          matrix_mult(peek(systems), tmp);
+          if (op[i].op.box.constants != NULL)
+            {
+              struct constants * constant = op[i].op.box.constants->s.c;
+              g.red = constant->red;
+              g.green = constant->green;
+              g.blue = constant->blue;
+              draw_polygons(tmp, t, zb, view, light, g, constant);
+            }
+          else {
+            draw_polygons(tmp, t, zb, view, light, ambient, reflect);
+          }
+          tmp->lastcol = 0;
+          break;
+        case LINE:
+          add_edge(tmp,
+            op[i].op.line.p0[0],
+            op[i].op.line.p0[1],
+            op[i].op.line.p0[1],
+            op[i].op.line.p1[0],
+            op[i].op.line.p1[1],
+            op[i].op.line.p1[1]
+          );
+          matrix_mult(peek(systems), tmp);
+          draw_lines(tmp, t, zb, ambient);
+          tmp->lastcol = 0;
+          break;
+        case MOVE:
+          tmp = make_translate(op[i].op.move.d[0], op[i].op.move.d[1], op[i].op.move.d[2]);
+          matrix_mult(peek(systems), tmp);
+          copy_matrix(tmp, peek(systems));
+          tmp->lastcol = 0;
+          break;
+        case SCALE:
+          tmp = make_scale(op[i].op.scale.d[0], op[i].op.scale.d[1], op[i].op.scale.d[2]);
+          matrix_mult(peek(systems), tmp);
+          copy_matrix(tmp, peek(systems));
+          tmp->lastcol = 0;
+          break;
+        case ROTATE:
+          theta = op[i].op.rotate.degrees * (M_PI / 180);
+          double axis = op[i].op.rotate.axis;
+          if (axis == 0)
+            tmp = make_rotX(theta);
+          else if (axis == 1)
+            tmp = make_rotY(theta);
+          else
+            tmp = make_rotZ(theta);
 
-    printf("%d: ",i);
+          matrix_mult(peek(systems), tmp);
+          copy_matrix(tmp, peek(systems));
+          tmp->lastcol = 0;
+          break;
+        case PUSH:
+          push(systems);
+          break;
+        case POP:
+          pop(systems);
+          break;
+        case DISPLAY:
+          display(t);
+          break;
+        case SAVE:
+          save_extension(t, op[i].op.save.p->name);
+          break;
+        case BASENAME:
+          // printf("Basename: %s",op[i].op.basename.p->name);
+          break;
+        case SAVE_KNOBS:
+          // printf("Save knobs: %s",op[i].op.save_knobs.p->name);
+          break;
+        case TWEEN:
+          // printf("Tween: %4.0f %4.0f, %s %s",
+          //        op[i].op.tween.start_frame,
+          //        op[i].op.tween.end_frame,
+          //        op[i].op.tween.knob_list0->name,
+          //        op[i].op.tween.knob_list1->name);
+          break;
+        case FRAMES:
+          // printf("Num frames: %4.0f",op[i].op.frames.num_frames);
+          break;
+        case VARY:
+          // printf("Vary: %4.0f %4.0f, %4.0f %4.0f",
+          //        op[i].op.vary.start_frame,
+          //        op[i].op.vary.end_frame,
+          //        op[i].op.vary.start_val,
+          //        op[i].op.vary.end_val);
+          break;
+        case GENERATE_RAYFILES:
+          // printf("Generate Ray Files");
+          break;
+        case SHADING:
+          // printf("Shading: %s",op[i].op.shading.p->name);
+          break;
+        case SETKNOBS:
+          // printf("Setknobs: %f",op[i].op.setknobs.value);
+          break;
+        case FOCAL:
+          // printf("Focal: %f",op[i].op.focal.value);
+          break;
+        case MESH:
+          // printf("Mesh: filename: %s",op[i].op.mesh.name);
+          // if (op[i].op.mesh.constants != NULL)
+          //   {
+          //     printf("\tconstants: %s",op[i].op.mesh.constants->name);
+          //   }
+          break;
+        case SET:
+          // printf("Set: %s %6.2f",
+          //        op[i].op.set.p->name,
+          //        op[i].op.set.p->s.value);
+          break;
+        case LIGHT:
+          // printf("Light: %s at: %6.2f %6.2f %6.2f",
+          //        op[i].op.light.p->name,
+          //        op[i].op.light.c[0], op[i].op.light.c[1],
+          //        op[i].op.light.c[2]);
+          break;
+        case AMBIENT:
+          // printf("Ambient: %6.2f %6.2f %6.2f",
+          //        op[i].op.ambient.c[0],
+          //        op[i].op.ambient.c[1],
+          //        op[i].op.ambient.c[2]);
+          break;
 
-    printf("\n");
-  }
+        case CONSTANTS:
+          // printf("Constants: %s",op[i].op.constants.p->name);
+          break;
+        case SAVE_COORDS:
+          // printf("Save Coords: %s",op[i].op.save_coordinate_system.p->name);
+          break;
+        case CAMERA:
+          // printf("Camera: eye: %6.2f %6.2f %6.2f\taim: %6.2f %6.2f %6.2f",
+          //        op[i].op.camera.eye[0], op[i].op.camera.eye[1],
+          //        op[i].op.camera.eye[2],
+          //        op[i].op.camera.aim[0], op[i].op.camera.aim[1],
+          //        op[i].op.camera.aim[2]);
+          break;
+        }
+    }
 }
