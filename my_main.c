@@ -120,7 +120,38 @@ struct vary_node ** second_pass() {
   struct vary_node *curr = NULL;
   struct vary_node **knobs;
   knobs = (struct vary_node **)calloc(num_frames, sizeof(struct vary_node *));
+  int i = 0;
+  int sframe, eframe;
+  double svalue, evalue;
+  double change;
+  char * vname;
+  for(; i< lastop; i++) {
+    switch(op[i].opcode) {
+      case VARY:
+        sframe = op[i].op.vary.start_frame;
+        eframe = op[i].op.vary.end_frame;
+        svalue = op[i].op.vary.start_val;
+        evalue = op[i].op.vary.end_val;
+        vname = op[i].op.vary.p->name;
+        change = (evalue - svalue) / (eframe - sframe);
+        int j = sframe;
+        for(;j <= eframe; j++) {
+          struct vary_node * node = malloc(sizeof(struct vary_node));
+          strcpy(node->name, vname);
+          node->value = svalue + change * (j - sframe);
+          node->next = NULL;
 
+          curr = knobs[j];
+          if(curr == NULL) {
+            knobs[j] = node;
+          } else {
+            for(; curr->next != NULL; curr = curr->next) { }
+            curr->next = node;
+          }
+        }
+        break;
+    }
+  }
 
   return knobs;
 }
@@ -132,6 +163,13 @@ void my_main() {
   struct vary_node * vn;
   first_pass();
   knobs = second_pass();
+  int frame = 0;
+  for(; frame <= num_frames; frame++) {
+    struct vary_node * c = knobs[frame];
+    for(; c != NULL; c = c->next) {
+      printf("%d %s %lf\n", frame, c->name, c->value);
+    }
+  }
   char frame_name[128];
   int f;
 
