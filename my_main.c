@@ -71,6 +71,29 @@ void first_pass() {
   extern int num_frames;
   extern char name[128];
 
+  int i = 0;
+  for(;i < lastop; i++) {
+    switch(op[i].opcode) {
+      case FRAMES:
+        num_frames = op[i].op.frames.num_frames;
+        break;
+      case BASENAME:
+        strcpy(name, op[i].op.basename.p->name);
+        break;
+      case VARY:
+        if(num_frames == 0) {
+          printf("No frames!\n");
+          exit(1);
+        }
+        break;
+    }
+  }
+  if(num_frames && strcmp(name, "") == 0) {
+    strcpy(name, "default");
+    printf("%s\n%s\n",
+      "basename was not found.",
+      "basename set to: default");
+  }
 }
 
 /*======== struct vary_node ** second_pass() ==========
