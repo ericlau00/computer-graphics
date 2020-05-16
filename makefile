@@ -6,6 +6,9 @@ CC= gcc
 run: parser simple_anim.mdl
 	./mdl simple_anim.mdl
 
+gallery: parser simple_anim.mdl
+	./mdl gallery.mdl
+
 parser: lex.yy.c y.tab.c y.tab.h $(OBJECTS)
 	gcc -o mdl $(CFLAGS) lex.yy.c y.tab.c $(OBJECTS) $(LDFLAGS)
 

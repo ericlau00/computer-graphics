@@ -1,0 +1,44 @@
+constants dull_yellow 0.3 0.8 0.2 0.3 0.8 0.2 0 0 0
+constants matte_purple 0.2 0.7 0.3 0.0 0.0 0.0 0.0 0.7 0.3
+
+frames 50
+basename clap
+
+push
+    move 275 200 0
+    scale 1.5 1.5 1.5
+    rotate y -45
+
+    push
+        move 0 0 -35 hand
+
+        box dull_yellow -45  60 20 90 90 30
+        box dull_yellow -45 120 20 15 60 30
+        box dull_yellow -20 120 20 15 60 30
+        box dull_yellow   5 120 20 15 60 30
+        box dull_yellow  30 120 25 15 60 30
+        push
+            rotate z 45
+            box dull_yellow -45  65 20 15 60 30
+        pop
+    pop
+
+    push
+        move 0 0 35
+        move 0 0 35 hand
+
+        box matte_purple -45  60 20 90 90 30
+        box matte_purple -45 120 20 15 60 30
+        box matte_purple -20 120 20 15 60 30
+        box matte_purple   5 120 20 15 60 30
+        box matte_purple  30 120 25 15 60 30
+        push
+            rotate z 45
+            box matte_purple -45  65 20 15 60 30
+        pop
+    pop
+
+pop
+
+vary hand  0 24 0 1
+vary hand 25 49 1 0
