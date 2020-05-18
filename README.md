@@ -1,6 +1,7 @@
 # Work 12: The End
 
-Due: Monday 06/08 10:00am (tentative)
+## Due: Monday 06/08 10:00am (tentative)
+
 GitHub link: <https://github.com/mks66/final.git>
 
 For the final project, you are to add any features you’d like to your current graphics engine. Below are some good places to start (you may work on other features if you prefer, just talk to me about it first
