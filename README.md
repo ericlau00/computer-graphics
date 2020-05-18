@@ -1,6 +1,7 @@
-# Work 12: Gettin' Giffy With It
+# Work 11: Gettin' Giffy With It
 
-Due: Monday 05/11 10:00am
+## Due: Monday 05/11 10:00am
+
 GitHub link: <https://github.com/mks66/animation.git>
 
 Animation! Woohoo!
