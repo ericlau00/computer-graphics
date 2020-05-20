@@ -2,6 +2,15 @@
 
 ## Due: Monday 06/08 10:00am (tentative)
 
+## Proposal
+
+### Eric Lau, Period 10
+
+### Features
+
+- Implement MDL `shading` command (Gouraud and Phong shading)
+- Implement MDL `mesh` command (.obj file support)
+
 GitHub link: <https://github.com/mks66/final.git>
 
 For the final project, you are to add any features you’d like to your current graphics engine. Below are some good places to start (you may work on other features if you prefer, just talk to me about it first
