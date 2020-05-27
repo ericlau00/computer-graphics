@@ -63,3 +63,6 @@ dkms.conf
 
 # Executable files
 main
+
+# Test files
+test.c
