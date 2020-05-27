@@ -124,7 +124,7 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 24 "mdl.y" /* yacc.c:1909  */
+#line 23 "mdl.y" /* yacc.c:1909  */
 
   double val;
   char string[255];

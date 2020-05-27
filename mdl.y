@@ -1,12 +1,12 @@
 %{
   /* C declarations */
-  #include <stdio.h>
-  #include <stdlib.h>
-  #include <string.h>
-  #include "parser.h"
-  #include "matrix.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "parser.h"
+#include "matrix.h"
 
-  #define YYERROR_VERBOSE 1
+#define YYERROR_VERBOSE 1
 
   SYMTAB *s;
   struct light *l;
@@ -15,7 +15,6 @@
   struct matrix *m;
   int lastop=0;
   int lineno=0;
-
   %}
 
 
@@ -782,6 +781,7 @@ int yywrap()
 {
   return 1;
 }
+
 
 extern FILE *yyin;
 

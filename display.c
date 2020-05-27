@@ -12,6 +12,8 @@ for red, green and blue respectively
 #include <string.h>
 #include <unistd.h>
 #include <errno.h>
+#include <fcntl.h>
+#include <unistd.h>
 
 #include "ml6.h"
 #include "display.h"
@@ -80,13 +82,39 @@ void clear_zbuffer( zbuffer zb ) {
 
 /*======== void save_ppm() ==========
 Inputs:   screen s
-         char *file
-Returns:
+         char *file 
+Returns: 
 Saves screen s as a valid ppm file using the settings in ml6.h
-
-dw
 ====================*/
 void save_ppm( screen s, char *file) {
+
+  int x, y;
+  int fd;
+  char header[16];
+  unsigned char pixel[3];
+
+  fd = open(file, O_CREAT | O_WRONLY, 0644);
+  sprintf(header, "P6\n%d %d\n%d\n", XRES, YRES, MAX_COLOR);
+  write(fd, header, sizeof(header) - 1);
+  for ( y=0; y < YRES; y++ ) {
+    for ( x=0; x < XRES; x++) {
+      pixel[0] = s[x][y].red;
+      pixel[1] = s[x][y].green;
+      pixel[2] = s[x][y].blue;
+      write(fd, pixel, sizeof(pixel));
+    }
+  }
+  close(fd);
+}
+
+/*======== void save_ppm_ascii() ==========
+Inputs:   screen s
+         char *file 
+Returns: 
+Saves screen s as a valid ppm file using the
+settings in ml6.h
+====================*/
+void save_ppm_ascii( screen s, char *file) {
 
   int x, y;
   FILE *f;
@@ -95,11 +123,13 @@ void save_ppm( screen s, char *file) {
   fprintf(f, "P3\n%d %d\n%d\n", XRES, YRES, MAX_COLOR);
   for ( y=0; y < YRES; y++ ) {
     for ( x=0; x < XRES; x++)
+
       fprintf(f, "%d %d %d ", s[x][y].red, s[x][y].green, s[x][y].blue);
     fprintf(f, "\n");
   }
   fclose(f);
 }
+
 
 /*======== void save_extension() ==========
 Inputs: screen s
