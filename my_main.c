@@ -65,6 +65,12 @@
   If frames is found, but basename is not, set name
   to some default value, and print out a message
   with the name being used.
+
+  Checks the op array for the shading command
+
+  Should set shade if the shading command is present
+
+  If shade is not found, set shade to flat.
   ====================*/
 void first_pass() {
   int i;
@@ -73,6 +79,7 @@ void first_pass() {
   char frame_check = 0;
   extern int num_frames;
   extern char name[128];
+  extern char shade[8];
 
   num_frames = 1;
   for (i=0;i<lastop;i++) {
@@ -88,6 +95,9 @@ void first_pass() {
     else if (op[i].opcode == VARY) {
       vary_check = 1;
     }
+    else if(op[i].opcode == SHADING) {
+      strncpy( shade, op[i].op.shading.p->name, sizeof(shade));
+    }
 
     if ( vary_check && !frame_check ) {
       printf("Error: Vary command found but number of frames not set\b");
@@ -97,6 +107,10 @@ void first_pass() {
       printf("Warning: Animation code present but basename not set. Using \"frame\" as basename\n");
       strncpy(name, "frame", sizeof(name));
     }
+  }
+
+  if(strcmp(shade, "") == 0) {
+    strncpy( shade, "flat", sizeof(shade));
   }
 }
 
@@ -423,7 +437,7 @@ void my_main() {
           pop(systems);
           break;
         case SAVE:
-          printf("Save: %s",op[i].op.save.p->name);
+          printf("Save: %s\n",op[i].op.save.p->name);
           save_extension(t, op[i].op.save.p->name);
           break;
         case DISPLAY:
