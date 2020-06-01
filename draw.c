@@ -9,6 +9,14 @@
 #include "gmath.h"
 #include "symtab.h"
 
+#include "uthash.h"
+
+struct vertex_normals {
+  char vertex[256];
+  double * normal;
+  UT_hash_handle hh;
+};
+
 /*======== void draw_scanline() ==========
   Inputs: struct matrix *points
           int i
@@ -62,12 +70,6 @@ void scanline_convert( struct matrix *points, int i, screen s, zbuffer zb, color
   y0 = points->m[1][i];
   y1 = points->m[1][i+1];
   y2 = points->m[1][i+2];
-
-  // Alas random color, we hardly knew ye
-  /* color c; */
-  /* c.red = (23 * (i/3))%255; */
-  /* c.green = (109 * (i/3))%255; */
-  /* c.blue = (c.blue+(227 * (i/3)))%255; */
 
   //find bot, mid, top
   if ( y0 <= y1 && y0 <= y2) {
@@ -179,46 +181,42 @@ void add_polygon( struct matrix *polygons,
   ====================*/
 void draw_polygons( struct matrix *polygons, screen s, zbuffer zb,
                     double *view, double light[2][3], color ambient,
-                    struct constants *reflect) {
+                    struct constants *reflect, char shade[8]) {
   if ( polygons->lastcol < 3 ) {
     printf("Need at least 3 points to draw a polygon!\n");
     return;
   }
 
   int point;
-  double *normal;
+  double * normal;
+  struct vertex_normals * vn = NULL;
+  char v[256];
 
   for (point=0; point < polygons->lastcol-2; point+=3) {
-
+    struct vertex_normals * out;
+    struct vertex_normals * tmp;
+    tmp = (struct vertex_normals *)malloc(sizeof * tmp);
     normal = calculate_normal(polygons, point);
+    sprintf(v, "%0.3lf, %0.3lf, %0.3lf",
+            polygons->m[0][point],
+            polygons->m[1][point],
+            polygons->m[2][point]);
+    // printf("%s\n", v);
+    HASH_FIND_STR(vn, v, out);
+    if (out == NULL) {
+      printf("%s: %lf %lf %lf\n", v, normal[0], normal[1], normal[2]);
+      strcpy(tmp->vertex, v);
+      tmp->normal = normal;
+      HASH_ADD_STR(vn, vertex, tmp);
+      HASH_FIND_STR(vn, v, out);
+      printf("%s: %lf %lf %lf\n", out->vertex, out->normal[0], out->normal[1], out->normal[2]);
+    }
 
     if ( normal[2] > 0 ) {
 
       // get color value only if front facing
       color i = get_lighting(normal, view, ambient, light, reflect);
       scanline_convert(polygons, point, s, zb, i);
-
-      /* draw_line( polygons->m[0][point], */
-      /*            polygons->m[1][point], */
-      /*            polygons->m[2][point], */
-      /*            polygons->m[0][point+1], */
-      /*            polygons->m[1][point+1], */
-      /*            polygons->m[2][point+1], */
-      /*            s, zb, c); */
-      /* draw_line( polygons->m[0][point+2], */
-      /*            polygons->m[1][point+2], */
-      /*            polygons->m[2][point+2], */
-      /*            polygons->m[0][point+1], */
-      /*            polygons->m[1][point+1], */
-      /*            polygons->m[2][point+1], */
-      /*            s, zb, c); */
-      /* draw_line( polygons->m[0][point], */
-      /*            polygons->m[1][point], */
-      /*            polygons->m[2][point], */
-      /*            polygons->m[0][point+2], */
-      /*            polygons->m[1][point+2], */
-      /*            polygons->m[2][point+2], */
-      /*            s, zb, c); */
     }
   }
 }
@@ -299,11 +297,9 @@ void add_sphere( struct matrix * edges,
   longStart = 1;
   longStop = step;
 
-  //step++; needed for my triangles
   for ( lat = latStart; lat < latStop; lat++ ) {
     for ( longt = longStart; longt < longStop; longt++ ) {
 
-      /*Milan's Triangles*/
       p0 = lat * (step+1) + longt;
       p1 = p0 + 1;
       p2 = (p1 + step) % (step * (step+1));
@@ -327,34 +323,6 @@ void add_sphere( struct matrix * edges,
                    points->m[0][p3],
                    points->m[1][p3],
                    points->m[2][p3]);
-
-      /*My Triangles*/
-      /* p0 = lat * (step) + longt; */
-      /* p1 = p0+1; */
-      /* p2 = (p1+step) % (step * (step-1)); */
-      /* p3 = (p0+step) % (step * (step-1)); */
-
-      /* //printf("p0: %d\tp1: %d\tp2: %d\tp3: %d\n", p0, p1, p2, p3); */
-      /* if (longt < step - 2) */
-      /*   add_polygon( edges, points->m[0][p0], */
-      /*                points->m[1][p0], */
-      /*                points->m[2][p0], */
-      /*                points->m[0][p1], */
-      /*                points->m[1][p1], */
-      /*                points->m[2][p1], */
-      /*                points->m[0][p2], */
-      /*                points->m[1][p2], */
-      /*                points->m[2][p2]); */
-      /* if (longt > 0 ) */
-      /*   add_polygon( edges, points->m[0][p0], */
-      /*                points->m[1][p0], */
-      /*                points->m[2][p0], */
-      /*                points->m[0][p2], */
-      /*                points->m[1][p2], */
-      /*                points->m[2][p2], */
-      /*                points->m[0][p3], */
-      /*                points->m[1][p3], */
-      /*                points->m[2][p3]); */
     }
   }
   free_matrix(points);

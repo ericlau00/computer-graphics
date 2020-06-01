@@ -9,6 +9,9 @@ run: parser scripts/simple_anim.mdl
 sphere: parser scripts/sphere.mdl
 	./mdl scripts/sphere.mdl
 
+box: parser scripts/box.mdl
+	./mdl scripts/box.mdl
+
 parser: lex.yy.c y.tab.c y.tab.h $(OBJECTS)
 	gcc -o mdl $(CFLAGS) lex.yy.c y.tab.c $(OBJECTS) $(LDFLAGS)
 

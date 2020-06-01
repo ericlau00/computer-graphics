@@ -295,7 +295,7 @@ void my_main() {
                      op[i].op.sphere.r, step_3d);
           matrix_mult( peek(systems), tmp );
           draw_polygons(tmp, t, zb, view, light, ambient,
-                        reflect);
+                        reflect, shade);
           tmp->lastcol = 0;
           reflect = &white;
           break;
@@ -318,7 +318,7 @@ void my_main() {
                     op[i].op.torus.r0,op[i].op.torus.r1, step_3d);
           matrix_mult( peek(systems), tmp );
           draw_polygons(tmp, t, zb, view, light, ambient,
-                        reflect);
+                        reflect, shade);
           tmp->lastcol = 0;
           reflect = &white;
           break;
@@ -342,7 +342,7 @@ void my_main() {
                   op[i].op.box.d1[2]);
           matrix_mult( peek(systems), tmp );
           draw_polygons(tmp, t, zb, view, light, ambient,
-                        reflect);
+                        reflect, shade);
           tmp->lastcol = 0;
           reflect = &white;
           break;
