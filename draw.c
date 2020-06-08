@@ -13,7 +13,7 @@
 
 struct vertex_normals {
   char vertex[256];
-  double * normal;
+  double normal[3];
   UT_hash_handle hh;
 };
 
@@ -189,34 +189,70 @@ void draw_polygons( struct matrix *polygons, screen s, zbuffer zb,
 
   int point;
   double * normal;
-  struct vertex_normals * vn = NULL;
-  char v[256];
 
-  for (point=0; point < polygons->lastcol-2; point+=3) {
-    struct vertex_normals * out;
-    struct vertex_normals * tmp;
-    tmp = (struct vertex_normals *)malloc(sizeof * tmp);
-    normal = calculate_normal(polygons, point);
-    sprintf(v, "%0.3lf, %0.3lf, %0.3lf",
+  if(strcmp(shade, "gouraud") == 0) {
+    struct vertex_normals * vn = NULL;
+    for(point=0; point < polygons->lastcol; point++) {
+      normal = calculate_normal(polygons, point);
+      if (normal[2] > 0) {
+        char v[256];
+        sprintf(v, "%0.3lf, %0.3lf, %0.3lf",
+              polygons->m[0][point],
+              polygons->m[1][point],
+              polygons->m[2][point]);
+        struct vertex_normals * out;
+        HASH_FIND_STR(vn, v, out);
+        if(out == NULL) {
+          struct vertex_normals * tmp;
+          tmp = malloc(sizeof(struct vertex_normals));
+          strcpy(tmp->vertex, v);
+          tmp->normal[0] = normal[0];
+          tmp->normal[1] = normal[1];
+          tmp->normal[2] = normal[2];
+          HASH_ADD_STR(vn, vertex, tmp);
+        } else {
+          out->normal[0] = (normal[0] + out->normal[0]) / 2;
+          out->normal[1] = (normal[1] + out->normal[1]) / 2;
+          out->normal[2] = (normal[2] + out->normal[2]) / 2;
+        }
+      }
+    }
+    for(point=0; point < polygons->lastcol-2; point+=3) {
+      char v[256];
+      struct vertex_normals * out;
+      sprintf(v, "%0.3lf, %0.3lf, %0.3lf",
             polygons->m[0][point],
             polygons->m[1][point],
             polygons->m[2][point]);
-    // printf("%s\n", v);
-    HASH_FIND_STR(vn, v, out);
-    if (out == NULL) {
-      printf("%s: %lf %lf %lf\n", v, normal[0], normal[1], normal[2]);
-      strcpy(tmp->vertex, v);
-      tmp->normal = normal;
-      HASH_ADD_STR(vn, vertex, tmp);
       HASH_FIND_STR(vn, v, out);
-      printf("%s: %lf %lf %lf\n", out->vertex, out->normal[0], out->normal[1], out->normal[2]);
+      if(out != NULL) {
+        if(out->normal[2] > 0) {
+          double *N = (double *)malloc(3 * sizeof(double));
+          N[0] = out->normal[0];
+          N[1] = out->normal[1];
+          N[2] = out->normal[2];
+          color i = get_lighting(N, view, ambient, light, reflect);
+        }
+        // printf("%s %lf\n", out->vertex, out->normal[2]);
+      }
     }
-
-    if ( normal[2] > 0 ) {
-
-      // get color value only if front facing
-      color i = get_lighting(normal, view, ambient, light, reflect);
-      scanline_convert(polygons, point, s, zb, i);
+  } else if (strcmp(shade, "phong") == 0) {
+    // struct vertex_normals * temp;
+    // for(temp=vn; temp!=NULL; temp=temp->hh.next) {
+    //   printf("%s: %lf %lf %lf\n",
+    //     temp->vertex,
+    //     temp->normal[0],
+    //     temp->normal[1],
+    //     temp->normal[2]);
+    // }
+  } else {
+    for (point=0; point < polygons->lastcol-2; point+=3) {
+      normal = calculate_normal(polygons, point);
+      if ( normal[2] > 0 ) {
+        // get color value only if front facing
+        color i = get_lighting(normal, view, ambient, light, reflect);
+        scanline_convert(polygons, point, s, zb, i);
+      }
     }
   }
 }
