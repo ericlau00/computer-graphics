@@ -1,7 +1,8 @@
 constants shiny_purple 0.2 0.3 0.7 0.0 0.0 0.0 0.0 0.3 0.7
 push
-    move 250 250 0
+    move 100 250 0
+    rotate x -45
     box shiny_purple 0 0 0 200 200 200
 pop
-shading wireframe
+shading gouraud
 save gouraud_box.png

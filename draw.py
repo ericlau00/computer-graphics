@@ -1,8 +1,12 @@
 from display import *
 from matrix import *
 from gmath import *
+import pprint
 
-def draw_scanline(x0, z0, x1, z1, y, screen, zbuffer, color):
+def draw_scanline(x0, z0, x1, z1, y, screen, zbuffer, color, shade):
+    if shade == 'gouraud':
+        c0 = color[0]
+        c1 = color[1]
     if x0 > x1:
         tx = x0
         tz = z0
@@ -10,17 +14,22 @@ def draw_scanline(x0, z0, x1, z1, y, screen, zbuffer, color):
         z0 = z1
         x1 = tx
         z1 = tz
+        if shade == 'gouraud':
+            c0, c1 = c1, c0
 
     x = x0
     z = z0
     delta_z = (z1 - z0) / (x1 - x0 + 1) if (x1 - x0 + 1) != 0 else 0
 
     while x <= x1:
+        if shade == 'gouraud':
+            dx = (x - x0) / (x1 - x0 + 1)
+            color = [int(c0[i] + (c1[i] - c0[i]) * dx) for i in range(3)]
         plot(screen, zbuffer, color, x, y, z)
         x+= 1
         z+= delta_z
 
-def scanline_convert(polygons, i, screen, zbuffer, color):
+def scanline_convert(polygons, i, screen, zbuffer, color, shade):
     flip = False
     BOT = 0
     TOP = 2
@@ -29,12 +38,6 @@ def scanline_convert(polygons, i, screen, zbuffer, color):
     points = [ (polygons[i][0], polygons[i][1], polygons[i][2]),
                (polygons[i+1][0], polygons[i+1][1], polygons[i+1][2]),
                (polygons[i+2][0], polygons[i+2][1], polygons[i+2][2]) ]
-
-    # alas random color, we hardly knew ye
-    #color = [0,0,0]
-    #color[RED] = (23*(i/3)) %256
-    #color[GREEN] = (109*(i/3)) %256
-    #color[BLUE] = (227*(i/3)) %256
 
     points.sort(key = lambda x: x[1])
     x0 = points[BOT][0]
@@ -52,6 +55,21 @@ def scanline_convert(polygons, i, screen, zbuffer, color):
     dx1 = (points[MID][0] - points[BOT][0]) / distance1 if distance1 != 0 else 0
     dz1 = (points[MID][2] - points[BOT][2]) / distance1 if distance1 != 0 else 0
 
+    if shade == 'gouraud':
+        vn = color['vertex_normals']
+        bvertex = vn[tuple([points[BOT][0], points[BOT][1], points[BOT][2]])]
+        mvertex = vn[tuple([points[MID][0], points[MID][1], points[MID][2]])]
+        tvertex = vn[tuple([points[TOP][0], points[TOP][1], points[TOP][2]])]
+        bcolor = get_lighting(bvertex, color['view'], color['ambient'], color['light'], color['symbols'], color['reflect'])
+        mcolor = get_lighting(mvertex, color['view'], color['ambient'], color['light'], color['symbols'], color['reflect'])
+        tcolor = get_lighting(tvertex, color['view'], color['ambient'], color['light'], color['symbols'], color['reflect'])
+
+        dc0 = [ (tcolor[i] - bcolor[i]) / distance0 if distance0 != 0 else 0 for i in range(3) ]
+        dc1 = [ (mcolor[i] - bcolor[i]) / distance1 if distance1 != 0 else 0 for i in range(3) ]
+
+        c0 = bcolor
+        c1 = bcolor
+
     while y <= int(points[TOP][1]):
         if ( not flip and y >= int(points[MID][1])):
             flip = True
@@ -61,13 +79,22 @@ def scanline_convert(polygons, i, screen, zbuffer, color):
             x1 = points[MID][0]
             z1 = points[MID][2]
 
-        #draw_line(int(x0), y, z0, int(x1), y, z1, screen, zbuffer, color)
-        draw_scanline(int(x0), z0, int(x1), z1, y, screen, zbuffer, color)
+            if shade == 'gouraud':
+                dc1 = [ (tcolor[i] - mcolor[i]) / distance2 if distance2 != 0 else 0 for i in range(3) ]
+                c1 = mcolor
+
+        if(shade == 'gouraud'):
+            color = [c0, c1]
+
+        draw_scanline(int(x0), z0, int(x1), z1, y, screen, zbuffer, color, shade)
         x0+= dx0
         z0+= dz0
         x1+= dx1
         z1+= dz1
         y+= 1
+        if shade == 'gouraud':
+            c0 = [ c0[i] + dc0[i] for i in range(3)]
+            c1 = [ c1[i] + dc1[i] for i in range(3)]
 
 
 
@@ -81,39 +108,38 @@ def draw_polygons( polygons, screen, zbuffer, view, ambient, light, symbols, ref
         print('Need at least 3 points to draw')
         return
 
-    print(shade)
+    vertex_normals = dict()
+    point = 0
+    if shade == 'gouraud':
+        while point < len(polygons) - 2:
+            normal = calculate_normal(polygons, point)[:]
+            if normal[2] > 0:
+                for i in range(3):
+                    vertex = tuple([polygons[point+i][0], polygons[point+i][1], polygons[point+i][2]])
+                    if vertex in vertex_normals:
+                        vert = vertex_normals[vertex]
+                        vert = [(vert[0] + normal[0]) / 2, (vert[1] + normal[1]) / 2, (vert[2] + normal[2]) / 2]
+                        vertex_normals[vertex] = vert
+                    else:
+                        vertex_normals[vertex] = [normal[0], normal[1], normal[2]]
+            point+= 3
+
     point = 0
     while point < len(polygons) - 2:
-
         normal = calculate_normal(polygons, point)[:]
-
-        #print normal
         if normal[2] > 0:
-
-            color = get_lighting(normal, view, ambient, light, symbols, reflect )
-            scanline_convert(polygons, point, screen, zbuffer, color)
-
-            # draw_line( int(polygons[point][0]),
-            #            int(polygons[point][1]),
-            #            polygons[point][2],
-            #            int(polygons[point+1][0]),
-            #            int(polygons[point+1][1]),
-            #            polygons[point+1][2],
-            #            screen, zbuffer, color)
-            # draw_line( int(polygons[point+2][0]),
-            #            int(polygons[point+2][1]),
-            #            polygons[point+2][2],
-            #            int(polygons[point+1][0]),
-            #            int(polygons[point+1][1]),
-            #            polygons[point+1][2],
-            #            screen, zbuffer, color)
-            # draw_line( int(polygons[point][0]),
-            #            int(polygons[point][1]),
-            #            polygons[point][2],
-            #            int(polygons[point+2][0]),
-            #            int(polygons[point+2][1]),
-            #            polygons[point+2][2],
-            #            screen, zbuffer, color)
+            if shade == 'flat':
+                color = get_lighting(normal, view, ambient, light, symbols, reflect )
+            else:
+                color = {
+                    'view': view,
+                    'ambient': ambient,
+                    'light': light,
+                    'symbols': symbols,
+                    'reflect': reflect,
+                    'vertex_normals': vertex_normals
+                }
+            scanline_convert(polygons, point, screen, zbuffer, color, shade)
         point+= 3
 
 
@@ -321,7 +347,6 @@ def add_edge( matrix, x0, y0, z0, x1, y1, z1 ):
 
 def add_point( matrix, x, y, z=0 ):
     matrix.append( [x, y, z, 1] )
-
 
 
 def draw_line( x0, y0, z0, x1, y1, z1, screen, zbuffer, color ):
