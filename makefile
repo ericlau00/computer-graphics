@@ -12,6 +12,9 @@ sphere: parser scripts/sphere.mdl
 box: parser scripts/box.mdl
 	./mdl scripts/box.mdl
 
+flat: parser scripts/flatbox.mdl
+	./mdl scripts/flatbox.mdl
+
 parser: lex.yy.c y.tab.c y.tab.h $(OBJECTS)
 	gcc -o mdl $(CFLAGS) lex.yy.c y.tab.c $(OBJECTS) $(LDFLAGS)
 

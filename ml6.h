@@ -47,4 +47,21 @@ typedef struct point_t screen[XRES][YRES];
 
 //z-buffer is a 2d array of doubles to store z values
 typedef double zbuffer[XRES][YRES];
+
+struct dpoint_t {
+
+  double red;
+  double green;
+  double blue;
+} dpoint_t;
+
+/*
+  We can now use color as a data type representing a point.
+  eg:
+  color c;
+  c.red = 0;
+  c.green = 45;
+  c.blue = 187;
+*/
+typedef struct dpoint_t dcolor;
 #endif

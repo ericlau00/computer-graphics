@@ -11,12 +11,39 @@
 
 #include "uthash.h"
 
-struct vertex_normals {
-  char vertex[256];
-  double normal[3];
-  UT_hash_handle hh;
-};
+dcolor get_vertex_color(struct vertex_normals * vn, double x, double y, double z,
+  double * normal, double * view, color alight, double light[2][3], struct constants * reflect) {
+  dcolor c;
+  char v[256];
+  sprintf(v, "%0.3lf, %0.3lf, %0.3lf", x, y, z);
+  struct vertex_normals * out;
+  HASH_FIND_STR(vn, v, out);
+  double *N = (double *)malloc(3 * sizeof(double));
+  N[0] = out->normal[0];
+  N[1] = out->normal[1];
+  N[2] = out->normal[2];
+  color i = get_lighting(N, view, alight, light, reflect);
+  c.red = i.red;
+  c.green = i.green;
+  c.blue = i.blue;
+  return c;
+}
 
+dcolor get_color_diff(int dist, dcolor c0, dcolor c1) {
+  dcolor c;
+  c.red = (c1.red - c0.red) / dist;
+  c.green = (c1.green - c0.green) / dist;
+  c.blue = (c1.blue - c0.blue) / dist;
+  return c;
+}
+
+dcolor add_color(dcolor c0, dcolor change) {
+  dcolor c;
+  c.red = c0.red + change.red;
+  c.green = c0.green + change.green;
+  c.blue = c0.blue + change.blue;
+  return c;
+}
 /*======== void draw_scanline() ==========
   Inputs: struct matrix *points
           int i
@@ -26,24 +53,47 @@ struct vertex_normals {
 
   Line algorithm specifically for horizontal scanlines
   ====================*/
-void draw_scanline(int x0, double z0, int x1, double z1, int y, screen s, zbuffer zb, color c) {
+void draw_scanline(int x0, double z0, int x1, double z1, int y, screen s, zbuffer zb, color c, dcolor c0, dcolor c1, char shade[8]) {
   int tx, tz;
+  dcolor tc;
   //swap if needed to assure left->right drawing
   if (x0 > x1) {
     tx = x0;
     tz = z0;
+    tc = c0;
     x0 = x1;
     z0 = z1;
+    c0 = c1;
     x1 = tx;
     z1 = tz;
+    c1 = tc;
   }
 
   double delta_z;
   delta_z = (x1 - x0) != 0 ? (z1 - z0) / (x1 - x0 + 1) : 0;
   int x;
   double z = z0;
+  dcolor delta_dc;
+  if(strcmp(shade, "gouraud") == 0) {
+    delta_dc.red = (c1.red - c0.red) / (x1 - x0 + 1);
+    delta_dc.green = (c1.green - c0.green) / (x1 - x0 + 1);
+    delta_dc.blue =  (c1.blue - c0.blue) / (x1 - x0 + 1);
+  }
 
+  dcolor dc;
   for(x=x0; x <= x1; x++) {
+    if (strcmp(shade, "gouraud") == 0) {
+      dc.red += delta_dc.red;
+      dc.green += delta_dc.green;
+      dc.blue += delta_dc.blue;
+
+      limit_dcolor(&dc);
+
+      c.red = abs(dc.red);
+      c.green = abs(dc.green);
+      c.blue = abs(dc.blue);
+      // printf("%lf %lf %lf\n", dc.red, dc.green, dc.blue);
+    }
     plot(s, zb, c, x, y, z);
     z+= delta_z;
   }
@@ -58,12 +108,16 @@ void draw_scanline(int x0, double z0, int x1, double z1, int y, screen s, zbuffe
 
   Fills in polygon i by drawing consecutive horizontal (or vertical) lines.
   ====================*/
-void scanline_convert( struct matrix *points, int i, screen s, zbuffer zb, color il ) {
+void scanline_convert(
+  struct matrix *points, int i, screen s, zbuffer zb, char shade[8], color il,
+  double * normal, double * view, color alight, double light[2][3], struct constants * reflect,
+  struct vertex_normals * vn) {
 
   int top, mid, bot, y;
   int distance0, distance1, distance2;
   double x0, x1, y0, y1, y2, dx0, dx1, z0, z1, dz0, dz1;
   int flip = 0;
+  dcolor c0, c1, c2, dc0, dc1;
 
   z0 = z1 = dz0 = dz1 = 0;
 
@@ -105,8 +159,6 @@ void scanline_convert( struct matrix *points, int i, screen s, zbuffer zb, color
       top = i;
     }
   }//end y2 bottom
-  //printf("ybot: %0.2f, ymid: %0.2f, ytop: %0.2f\n", (points->m[1][bot]),(points->m[1][mid]), (points->m[1][top]));
-  /* printf("bot: (%0.2f, %0.2f, %0.2f) mid: (%0.2f, %0.2f, %0.2f) top: (%0.2f, %0.2f, %0.2f)\n", */
 
   x0 = points->m[0][bot];
   x1 = points->m[0][bot];
@@ -118,29 +170,61 @@ void scanline_convert( struct matrix *points, int i, screen s, zbuffer zb, color
   distance1 = (int)(points->m[1][mid]) - y + 1;
   distance2 = (int)(points->m[1][top]) - (int)(points->m[1][mid]) + 1;
 
-  //printf("distance0: %d distance1: %d distance2: %d\n", distance0, distance1, distance2);
+  if (strcmp(shade, "gouraud") == 0) {
+    c0 = get_vertex_color(
+      vn, points->m[0][bot], points->m[1][bot], points->m[2][bot],
+      normal, view, alight, light, reflect);
+    c1 = get_vertex_color(
+      vn, points->m[0][top], points->m[1][top], points->m[2][top],
+      normal, view, alight, light, reflect);
+    c2 = get_vertex_color(
+      vn, points->m[0][mid], points->m[1][mid], points->m[2][mid],
+      normal, view, alight, light, reflect);
+    printf("%lf %lf %lf %lf %lf %lf\n",
+      points->m[0][bot], points->m[1][bot], points->m[2][bot],
+      c0.red, c0.green, c0.blue);
+    printf("%lf %lf %lf %lf %lf %lf\n",
+    points->m[0][top], points->m[1][top], points->m[2][top],
+    c1.red, c1.green, c1.blue);
+    printf("%lf %lf %lf %lf %lf %lf\n",
+    points->m[0][mid], points->m[1][mid], points->m[2][mid],
+    c2.red, c2.green, c2.blue);
+    dc0 = get_color_diff(distance0, c0, c1);
+    dc1 = get_color_diff(distance1, c2, c0);
+    printf("%lf %lf %lf\n", dc0.red, dc0.green, dc0.blue);
+    printf("%lf %lf %lf\n", dc1.red, dc1.green, dc1.blue);
+  }
+
   dx0 = distance0 > 0 ? (points->m[0][top]-points->m[0][bot])/distance0 : 0;
   dx1 = distance1 > 0 ? (points->m[0][mid]-points->m[0][bot])/distance1 : 0;
   dz0 = distance0 > 0 ? (points->m[2][top]-points->m[2][bot])/distance0 : 0;
   dz1 = distance1 > 0 ? (points->m[2][mid]-points->m[2][bot])/distance1 : 0;
-
   while ( y <= (int)points->m[1][top] ) {
-    //printf("\tx0: %0.2f x1: %0.2f y: %d\n", x0, x1, y);
-
     if ( !flip && y >= (int)(points->m[1][mid]) ) {
       flip = 1;
       dx1 = distance2 > 0 ? (points->m[0][top]-points->m[0][mid])/distance2 : 0;
       dz1 = distance2 > 0 ? (points->m[2][top]-points->m[2][mid])/distance2 : 0;
       x1 = points->m[0][mid];
       z1 = points->m[2][mid];
+      if (strcmp(shade, "gouraud") == 0) {
+        dc1 = get_color_diff(distance2, c1, c2);
+        printf("%d\n", distance2);
+        printf("222 %lf %lf %lf\n", dc1.red, dc1.green, dc1.blue);
+        c1 = c2;
+      }
     }//end flip code
-    //draw_line(x0, y, z0, x1, y, z1, s, zb, il);
-    draw_scanline(x0, z0, x1, z1, y, s, zb, il);
+    draw_scanline(x0, z0, x1, z1, y, s, zb, il, c0, c1, shade);
 
     x0+= dx0;
     x1+= dx1;
     z0+= dz0;
     z1+= dz1;
+    if (strcmp(shade, "gouraud") == 0) {
+      c0 = add_color(c0, dc0);
+      c1 = add_color(c1, dc1);
+    }
+    // printf("%lf %lf %lf\n", c0.red, c0.green, c0.blue);
+    // printf("%lf %lf %lf\n", c1.red, c1.green, c1.blue);
     y++;
   }//end scanline loop
 }
@@ -189,9 +273,9 @@ void draw_polygons( struct matrix *polygons, screen s, zbuffer zb,
 
   int point;
   double * normal;
+  struct vertex_normals * vn = NULL;
 
   if(strcmp(shade, "gouraud") == 0) {
-    struct vertex_normals * vn = NULL;
     for(point=0; point < polygons->lastcol; point++) {
       normal = calculate_normal(polygons, point);
       if (normal[2] > 0) {
@@ -218,22 +302,11 @@ void draw_polygons( struct matrix *polygons, screen s, zbuffer zb,
       }
     }
     for(point=0; point < polygons->lastcol-2; point+=3) {
-      char v[256];
-      struct vertex_normals * out;
-      sprintf(v, "%0.3lf, %0.3lf, %0.3lf",
-            polygons->m[0][point],
-            polygons->m[1][point],
-            polygons->m[2][point]);
-      HASH_FIND_STR(vn, v, out);
-      if(out != NULL) {
-        if(out->normal[2] > 0) {
-          double *N = (double *)malloc(3 * sizeof(double));
-          N[0] = out->normal[0];
-          N[1] = out->normal[1];
-          N[2] = out->normal[2];
-          color i = get_lighting(N, view, ambient, light, reflect);
-        }
-        // printf("%s %lf\n", out->vertex, out->normal[2]);
+      normal = calculate_normal(polygons, point);
+      if ( normal[2] > 0 ) {
+        color c;
+        scanline_convert(polygons, point, s, zb, shade, c,
+          normal, view, ambient, light, reflect, vn);
       }
     }
   } else if (strcmp(shade, "phong") == 0) {
@@ -251,7 +324,8 @@ void draw_polygons( struct matrix *polygons, screen s, zbuffer zb,
       if ( normal[2] > 0 ) {
         // get color value only if front facing
         color i = get_lighting(normal, view, ambient, light, reflect);
-        scanline_convert(polygons, point, s, zb, i);
+        scanline_convert(polygons, point, s, zb, shade, i,
+          normal, view, ambient, light, reflect, vn);
       }
     }
   }

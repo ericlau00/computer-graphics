@@ -105,6 +105,16 @@ void limit_color( color * c ) {
   c->blue = c->blue < 0 ? 0 : c->blue;
 }
 
+void limit_dcolor( dcolor * c ) {
+  c->red = c->red > 255 ? 255 : c->red;
+  c->green = c->green > 255 ? 255 : c->green;
+  c->blue = c->blue > 255 ? 255 : c->blue;
+
+  c->red = c->red < 0 ? 0 : c->red;
+  c->green = c->green < 0 ? 0 : c->green;
+  c->blue = c->blue < 0 ? 0 : c->blue;
+}
+
 //vector functions
 //normalize vetor, should modify the parameter
 void normalize( double *vector ) {

@@ -5,9 +5,20 @@
 #include "matrix.h"
 #include "ml6.h"
 #include "symtab.h"
+#include "uthash.h"
 
-void draw_scanline(int x0, double z0, int x1, double z1, int y, screen s, zbuffer zb, color c);
-void scanline_convert( struct matrix *points, int i, screen s, zbuffer zb, color il );
+struct vertex_normals {
+  char vertex[256];
+  double normal[3];
+  UT_hash_handle hh;
+};
+
+void draw_scanline(int x0, double z0, int x1, double z1, int y, screen s, zbuffer zb, color c, dcolor c0, dcolor c1, char shade[8]);
+void scanline_convert(
+  struct matrix *points, int i, screen s, zbuffer zb, char shade[8], color il,
+  double * normal, double * view, color alight, double light[2][3], struct constants * reflect,
+  struct vertex_normals * vn
+  );
 
 //polygon organization
 void add_polygons( struct matrix * polys,

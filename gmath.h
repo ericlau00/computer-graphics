@@ -21,6 +21,7 @@ color calculate_ambient(color alight, struct constants *reflect );
 color calculate_diffuse(double light[2][3], struct constants *reflect, double *normal );
 color calculate_specular(double light[2][3], struct constants *reflect, double *view, double *normal );
 void limit_color( color * c );
+void limit_dcolor(dcolor *c);
 
 // vector functions
 void normalize( double *vector );
