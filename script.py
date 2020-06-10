@@ -23,6 +23,7 @@ def first_pass( commands ):
     frameCheck = varyCheck = nameCheck = False
     name = ''
     num_frames = 1
+    shade = 'flat'
 
     for command in commands:
 
@@ -34,6 +35,11 @@ def first_pass( commands ):
         elif command['op'] == 'basename':
             name = command['args'][0]
             nameCheck = True
+        elif command['op'] == 'shading':
+             shade = command['shade_type']
+             if shade not in ['flat', 'gouraud', 'phong']:
+                 print('Error: Shade type not supported')
+                 exit()
 
     if varyCheck and not frameCheck:
         print('Error: Vary command found without setting number of frames!')
@@ -43,7 +49,7 @@ def first_pass( commands ):
         print('Animation code present but basename was not set. Using "frame" as basename.')
         name = 'frame'
 
-    return (name, num_frames)
+    return (name, num_frames, shade)
 
 """======== second_pass( commands ) ==========
 
@@ -126,7 +132,7 @@ def run(filename):
                           'blue': [0.2, 0.5, 0.5]}]
     reflect = '.white'
 
-    (name, num_frames) = first_pass(commands)
+    (name, num_frames, shade) = first_pass(commands)
     frames = second_pass(commands, num_frames)
 
     for f in range(num_frames):
@@ -163,7 +169,7 @@ def run(filename):
                         args[0], args[1], args[2],
                         args[3], args[4], args[5])
                 matrix_mult( stack[-1], tmp )
-                draw_polygons(tmp, screen, zbuffer, view, ambient, light, symbols, reflect)
+                draw_polygons(tmp, screen, zbuffer, view, ambient, light, symbols, reflect, shade)
                 tmp = []
                 reflect = '.white'
             elif c == 'sphere':
@@ -172,7 +178,7 @@ def run(filename):
                 add_sphere(tmp,
                            args[0], args[1], args[2], args[3], step_3d)
                 matrix_mult( stack[-1], tmp )
-                draw_polygons(tmp, screen, zbuffer, view, ambient, light, symbols, reflect)
+                draw_polygons(tmp, screen, zbuffer, view, ambient, light, symbols, reflect, shade)
                 tmp = []
                 reflect = '.white'
             elif c == 'torus':
@@ -181,7 +187,7 @@ def run(filename):
                 add_torus(tmp,
                           args[0], args[1], args[2], args[3], args[4], step_3d)
                 matrix_mult( stack[-1], tmp )
-                draw_polygons(tmp, screen, zbuffer, view, ambient, light, symbols, reflect)
+                draw_polygons(tmp, screen, zbuffer, view, ambient, light, symbols, reflect, shade)
                 tmp = []
                 reflect = '.white'
             elif c == 'line':
