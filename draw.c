@@ -22,6 +22,7 @@ dcolor get_vertex_color(struct vertex_normals * vn, double x, double y, double z
   N[0] = out->normal[0];
   N[1] = out->normal[1];
   N[2] = out->normal[2];
+  normalize(N);
   color i = get_lighting(N, view, alight, light, reflect);
   c.red = i.red;
   c.green = i.green;
@@ -31,9 +32,9 @@ dcolor get_vertex_color(struct vertex_normals * vn, double x, double y, double z
 
 dcolor get_color_diff(int dist, dcolor c0, dcolor c1) {
   dcolor c;
-  c.red = (c1.red - c0.red) / dist;
-  c.green = (c1.green - c0.green) / dist;
-  c.blue = (c1.blue - c0.blue) / dist;
+  c.red = dist > 0 ? (c1.red - c0.red) / dist : 0;
+  c.green = dist > 0 ? (c1.green - c0.green) / dist : 0;
+  c.blue = dist > 0 ? (c1.blue - c0.blue) / dist : 0;
   return c;
 }
 
@@ -184,13 +185,16 @@ void scanline_convert(
       points->m[0][bot], points->m[1][bot], points->m[2][bot],
       c0.red, c0.green, c0.blue);
     printf("%lf %lf %lf %lf %lf %lf\n",
-    points->m[0][top], points->m[1][top], points->m[2][top],
-    c1.red, c1.green, c1.blue);
+      points->m[0][top], points->m[1][top], points->m[2][top],
+      c1.red, c1.green, c1.blue);
     printf("%lf %lf %lf %lf %lf %lf\n",
-    points->m[0][mid], points->m[1][mid], points->m[2][mid],
-    c2.red, c2.green, c2.blue);
+      points->m[0][mid], points->m[1][mid], points->m[2][mid],
+      c2.red, c2.green, c2.blue);
     dc0 = get_color_diff(distance0, c0, c1);
-    dc1 = get_color_diff(distance1, c2, c0);
+    dc1 = get_color_diff(distance1, c1, c2);
+    c1 = get_vertex_color(
+      vn, points->m[0][bot], points->m[1][bot], points->m[2][bot],
+      normal, view, alight, light, reflect);
     printf("%lf %lf %lf\n", dc0.red, dc0.green, dc0.blue);
     printf("%lf %lf %lf\n", dc1.red, dc1.green, dc1.blue);
   }
@@ -207,12 +211,15 @@ void scanline_convert(
       x1 = points->m[0][mid];
       z1 = points->m[2][mid];
       if (strcmp(shade, "gouraud") == 0) {
-        dc1 = get_color_diff(distance2, c1, c2);
+        c1 = get_vertex_color(
+          vn, points->m[0][top], points->m[1][top], points->m[2][top],
+          normal, view, alight, light, reflect);
+        dc1 = get_color_diff(distance2, c2, c1);
         printf("%d\n", distance2);
         printf("222 %lf %lf %lf\n", dc1.red, dc1.green, dc1.blue);
         c1 = c2;
       }
-    }//end flip code
+    } //end flip code
     draw_scanline(x0, z0, x1, z1, y, s, zb, il, c0, c1, shade);
 
     x0+= dx0;
@@ -276,28 +283,31 @@ void draw_polygons( struct matrix *polygons, screen s, zbuffer zb,
   struct vertex_normals * vn = NULL;
 
   if(strcmp(shade, "gouraud") == 0) {
-    for(point=0; point < polygons->lastcol; point++) {
+    for(point=0; point < polygons->lastcol-2; point+=3) {
       normal = calculate_normal(polygons, point);
       if (normal[2] > 0) {
-        char v[256];
-        sprintf(v, "%0.3lf, %0.3lf, %0.3lf",
-              polygons->m[0][point],
-              polygons->m[1][point],
-              polygons->m[2][point]);
-        struct vertex_normals * out;
-        HASH_FIND_STR(vn, v, out);
-        if(out == NULL) {
-          struct vertex_normals * tmp;
-          tmp = malloc(sizeof(struct vertex_normals));
-          strcpy(tmp->vertex, v);
-          tmp->normal[0] = normal[0];
-          tmp->normal[1] = normal[1];
-          tmp->normal[2] = normal[2];
-          HASH_ADD_STR(vn, vertex, tmp);
-        } else {
-          out->normal[0] = (normal[0] + out->normal[0]) / 2;
-          out->normal[1] = (normal[1] + out->normal[1]) / 2;
-          out->normal[2] = (normal[2] + out->normal[2]) / 2;
+        int j;
+        for(j=0;j<3;j++) {
+          char v[256];
+          sprintf(v, "%0.3lf, %0.3lf, %0.3lf",
+                polygons->m[0][point + j],
+                polygons->m[1][point + j],
+                polygons->m[2][point + j]);
+          struct vertex_normals * out;
+          HASH_FIND_STR(vn, v, out);
+          if(out == NULL) {
+            struct vertex_normals * tmp;
+            tmp = malloc(sizeof(struct vertex_normals));
+            strcpy(tmp->vertex, v);
+            tmp->normal[0] = normal[0];
+            tmp->normal[1] = normal[1];
+            tmp->normal[2] = normal[2];
+            HASH_ADD_STR(vn, vertex, tmp);
+          } else {
+            out->normal[0] += normal[0];
+            out->normal[1] += normal[1];
+            out->normal[2] += normal[2];
+          }
         }
       }
     }
