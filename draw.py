@@ -7,6 +7,10 @@ def draw_scanline(x0, z0, x1, z1, y, screen, zbuffer, color, shade):
     if shade == 'gouraud':
         c0 = color[0]
         c1 = color[1]
+    if shade == 'phong':
+        v0 = color[0]
+        v1 = color[1]
+        info = color[2]
     if x0 > x1:
         tx = x0
         tz = z0
@@ -16,15 +20,20 @@ def draw_scanline(x0, z0, x1, z1, y, screen, zbuffer, color, shade):
         z1 = tz
         if shade == 'gouraud':
             c0, c1 = c1, c0
+        if shade == 'phong':
+            v0, v1 = v1, v0
 
     x = x0
     z = z0
     delta_z = (z1 - z0) / (x1 - x0 + 1) if (x1 - x0 + 1) != 0 else 0
 
     while x <= x1:
+        dx = (x - x0) / (x1 - x0 + 1)
         if shade == 'gouraud':
-            dx = (x - x0) / (x1 - x0 + 1)
             color = [int(c0[i] + (c1[i] - c0[i]) * dx) for i in range(3)]
+        if shade == 'phong':
+            normal = [v0[i] + (v1[i] - v0[i]) * dx for i in range(3)]
+            color = get_lighting(normal, info['view'], info['ambient'], info['light'], info['symbols'], info['reflect'])
         plot(screen, zbuffer, color, x, y, z)
         x+= 1
         z+= delta_z
@@ -55,20 +64,35 @@ def scanline_convert(polygons, i, screen, zbuffer, color, shade):
     dx1 = (points[MID][0] - points[BOT][0]) / distance1 if distance1 != 0 else 0
     dz1 = (points[MID][2] - points[BOT][2]) / distance1 if distance1 != 0 else 0
 
-    if shade == 'gouraud':
+    if shade == 'gouraud' or shade == 'phong':
         vn = color['vertex_normals']
         bvertex = vn[tuple([points[BOT][0], points[BOT][1], points[BOT][2]])]
         mvertex = vn[tuple([points[MID][0], points[MID][1], points[MID][2]])]
         tvertex = vn[tuple([points[TOP][0], points[TOP][1], points[TOP][2]])]
-        bcolor = get_lighting(bvertex, color['view'], color['ambient'], color['light'], color['symbols'], color['reflect'])
-        mcolor = get_lighting(mvertex, color['view'], color['ambient'], color['light'], color['symbols'], color['reflect'])
-        tcolor = get_lighting(tvertex, color['view'], color['ambient'], color['light'], color['symbols'], color['reflect'])
 
-        dc0 = [ (tcolor[i] - bcolor[i]) / distance0 if distance0 != 0 else 0 for i in range(3) ]
-        dc1 = [ (mcolor[i] - bcolor[i]) / distance1 if distance1 != 0 else 0 for i in range(3) ]
+        if shade == 'gouraud':
+            bcolor = get_lighting(bvertex, color['view'], color['ambient'], color['light'], color['symbols'], color['reflect'])
+            mcolor = get_lighting(mvertex, color['view'], color['ambient'], color['light'], color['symbols'], color['reflect'])
+            tcolor = get_lighting(tvertex, color['view'], color['ambient'], color['light'], color['symbols'], color['reflect'])
 
-        c0 = bcolor
-        c1 = bcolor
+            dc0 = [ (tcolor[i] - bcolor[i]) / distance0 if distance0 != 0 else 0 for i in range(3) ]
+            dc1 = [ (mcolor[i] - bcolor[i]) / distance1 if distance1 != 0 else 0 for i in range(3) ]
+
+            c0 = bcolor
+            c1 = bcolor
+        else:
+            info = {
+                'view': color['view'],
+                'ambient': color['ambient'],
+                'light': color['light'],
+                'symbols': color['symbols'],
+                'reflect': color['reflect']
+            }
+            dv0 = [ (tvertex[i] - bvertex[i]) / distance0 if distance0 != 0 else 0 for i in range(3) ]
+            dv1 = [ (mvertex[i] - bvertex[i]) / distance1 if distance1 != 0 else 0 for i in range(3) ]
+
+            v0 = bvertex
+            v1 = bvertex
 
     while y <= int(points[TOP][1]):
         if ( not flip and y >= int(points[MID][1])):
@@ -83,8 +107,14 @@ def scanline_convert(polygons, i, screen, zbuffer, color, shade):
                 dc1 = [ (tcolor[i] - mcolor[i]) / distance2 if distance2 != 0 else 0 for i in range(3) ]
                 c1 = mcolor
 
+            if shade == 'phong':
+                dv1 = [ (tvertex[i] - mvertex[i]) / distance2 if distance2 != 0 else 0 for i in range(3) ]
+                v1 = mvertex
+
         if(shade == 'gouraud'):
             color = [c0, c1]
+        if(shade == 'phong'):
+            color = [v0, v1, info]
 
         draw_scanline(int(x0), z0, int(x1), z1, y, screen, zbuffer, color, shade)
         x0+= dx0
@@ -95,6 +125,9 @@ def scanline_convert(polygons, i, screen, zbuffer, color, shade):
         if shade == 'gouraud':
             c0 = [ c0[i] + dc0[i] for i in range(3)]
             c1 = [ c1[i] + dc1[i] for i in range(3)]
+        if shade == 'phong':
+            v0 = [ v0[i] + dv0[i] for i in range(3)]
+            v1 = [ v1[i] + dv1[i] for i in range(3)]
 
 
 
@@ -110,7 +143,7 @@ def draw_polygons( polygons, screen, zbuffer, view, ambient, light, symbols, ref
 
     vertex_normals = dict()
     point = 0
-    if shade == 'gouraud':
+    if shade == 'gouraud' or shade == 'phong':
         while point < len(polygons) - 2:
             normal = calculate_normal(polygons, point)[:]
             if normal[2] > 0:
@@ -129,7 +162,7 @@ def draw_polygons( polygons, screen, zbuffer, view, ambient, light, symbols, ref
         normal = calculate_normal(polygons, point)[:]
         if normal[2] > 0:
             if shade == 'flat':
-                color = get_lighting(normal, view, ambient, light, symbols, reflect )
+                color = get_lighting(normal, view, ambient, light, symbols, reflect)
             else:
                 color = {
                     'view': view,

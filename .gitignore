@@ -66,3 +66,6 @@ main
 
 # Test files
 test.c
+
+# Visual Studio Code
+.vscode

@@ -1,7 +1,7 @@
 constants shiny_purple 0.2 0.3 0.7 0.0 0.0 0.0 0.0 0.3 0.7
 push
-    move 100 250 0
-    rotate x -45
+    move 200 300 0
+    rotate y -30
     box shiny_purple 0 0 0 200 200 200
 pop
 shading gouraud
