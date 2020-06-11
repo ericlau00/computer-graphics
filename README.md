@@ -1,17 +1,30 @@
 # Work 12: The End
 
-## Due: Monday 06/08 10:00am (tentative)
+## Due: Friday 06/12 10:00am
+
+GitHub link: <https://github.com/mks66/final.git>
+
+## Documentation
+
+Roster: **Eric Lau, Period 10**
+
+### Implemented Features
+
+- Implement MDL `shading` command (Gouraud and Phong shading)
+  - MDL command: `shading flat` for flat shading.
+  - MDL command: `shading gouraud` for gouraud shading.
+  - MDL command: `shading phong` for phong shading.
+  - Only flat, gouraud, and phong shading types are supported.
+- Implement MDL `mesh` command (.obj file support)
 
 ## Proposal
 
-### Eric Lau, Period 10
+Roster: **Eric Lau, Period 10**
 
-### Features
+### Proposed Features
 
 - Implement MDL `shading` command (Gouraud and Phong shading)
 - Implement MDL `mesh` command (.obj file support)
-
-GitHub link: <https://github.com/mks66/final.git>
 
 For the final project, you are to add any features you’d like to your current graphics engine. Below are some good places to start (you may work on other features if you prefer, just talk to me about it first
 
