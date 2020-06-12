@@ -17,6 +17,8 @@ Roster: **Eric Lau, Period 10**
   - Only flat, gouraud, and phong shading types are supported.
 - Implement MDL `mesh` command (.obj file support)
   - Put .obj files in /.obj directory
+  - Supports quadrilateral and triangle faces in .obj files
+  - MDL command: `mesh [constant] :<file-name-without-extension>`
 
 ## Proposal
 

@@ -140,6 +140,8 @@ def add_mesh(polygons, mesh):
                 vs.append([float(coord) for coord in coords])
             if f[i][0] == 'f':
                 face = f[i].split(" ")[1:]
+                face = [i.split('/')[0] for i in face]
+                tmp = list()
                 fs.append([int(i) - 1 for i in face])
     for face in fs:
         if len(face) == 3 or len(face) == 4:

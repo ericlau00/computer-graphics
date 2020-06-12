@@ -58,20 +58,6 @@ def save_ppm( screen, fname ):
         ppm+= row + '\n'
     f.write( ppm )
     f.close()
-# def save_ppm( screen, fname ):
-#     f = open( fname, 'w' )
-#     ppm = 'P3\n' + str(len(screen[0])) +' '+ str(len(screen)) +' '+ str(MAX_COLOR) +'\n'
-#     rows = []
-#     for y in range( len(screen) ):
-#         row = []
-#         for x in range( len(screen[y]) ):
-#             pixel = screen[y][x]
-#             row.append(' '.join([str(x) for x in pixel]))
-#         rows.append(' '.join(row))
-#     ppm+= '\n'.join(rows)
-#     print ppm
-#     f.write( ppm )
-#     f.close()
 
 def save_extension( screen, fname ):
     ppm_name = fname + '.ppm'
