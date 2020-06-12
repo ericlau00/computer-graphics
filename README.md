@@ -1,46 +1,28 @@
 # Work 12: The End
 
-## Due: Monday 06/08 10:00am (tentative)
-
-## Proposal
-
-### Eric Lau, Period 10
-
-### Features
-
-- Implement MDL `shading` command (Gouraud and Phong shading)
-- Implement MDL `mesh` command (.obj file support)
+## Due: Friday 06/12 10:00am
 
 GitHub link: <https://github.com/mks66/final.git>
 
-For the final project, you are to add any features you’d like to your current graphics engine. Below are some good places to start (you may work on other features if you prefer, just talk to me about it first
+## Documentation
 
-- **Existing, MDL Commands/Features:**
-  - light
-    - Add a light to the symbol table
-    - When calculating diffuse and specular: loop through all the lights.
-  - mesh
-    - Use an external .obj file for polygons
-    - Read up on the obj format [here](https://en.wikipedia.org/wiki/Wavefront_.obj_file).
-    - Find example files [here](https://people.sc.fsu.edu/~jburkardt/data/obj/obj.html).
-    - Make sure you deal with .obj files that list quadrilateral faces instead of triangles in some way.
-  - set
-    - Assign a value to a knob
-  - saveknobs
-    - Save current knob values to a list
-  - tween
-    - Produce an animation by going between two knob lists
-  - shading
-    - Use different shading techniques / calculating I more or less frequently.
-    - A hash table structure can be very helpful for dealing with vertex normals. If you are woking in c, check out [uthash](https://troydhanson.github.io/uthash/).
-  - save_coordinate_system
-    - Save a copy of the top of the stack to the symbol table
-    - use this coordinate system when drawing shapes (extra argument required)
-- **Additions to MDL that require changes to the language:**
-  - New primitive shapes
-  - Change the behavior of vary
-    - add a parameter to change how it calculates the change over time. e.g. Linear, Exponential, Logarithmic, Arbitrary equation, etc.
-  - Anti-aliasing / Super-sampling
-    - Reduce pixelated edges by calculating a higher resolution version of the image then reducing it to the intended size
-  - Texture mapping
-  - Using vary to move lights.
+Roster: **Eric Lau, Period 10**
+
+### Implemented Features
+
+- Implement MDL `shading` command (Gouraud and Phong shading)
+  - MDL command: `shading flat` for flat shading.
+  - MDL command: `shading gouraud` for gouraud shading.
+  - MDL command: `shading phong` for phong shading.
+  - Only flat, gouraud, and phong shading types are supported.
+- Implement MDL `mesh` command (.obj file support)
+  - Put .obj files in /.obj directory
+  - Supports quadrilateral and triangle faces in .obj files
+  - MDL command: `mesh [constant] :<file-name-without-extension>`
+
+## Proposal
+
+### Proposed Features
+
+- Implement MDL `shading` command (Gouraud and Phong shading)
+- Implement MDL `mesh` command (.obj file support)

@@ -1,58 +1,26 @@
-OBJECTS= symtab.o print_pcode.o matrix.o my_main.o display.o draw.o gmath.o stack.o
-CFLAGS= -g
-LDFLAGS= -lm
-CC= gcc
+brain: main.py matrix.py mdl.py display.py draw.py gmath.py
+	python3 main.py scripts/brain.mdl
 
-run: parser scripts/simple_anim.mdl
-	./mdl scripts/simple_anim.mdl
+robot: main.py matrix.py mdl.py display.py draw.py gmath.py
+	python3 main.py scripts/robot.mdl
 
-sphere: parser scripts/sphere.mdl
-	./mdl scripts/sphere.mdl
+box: main.py matrix.py mdl.py display.py draw.py gmath.py
+	python3 main.py scripts/box.mdl
 
-box: parser scripts/box.mdl
-	./mdl scripts/box.mdl
+face: main.py matrix.py mdl.py display.py draw.py gmath.py
+	python3 main.py scripts/face.mdl
 
-flat: parser scripts/flatbox.mdl
-	./mdl scripts/flatbox.mdl
+animate: main.py matrix.py mdl.py display.py draw.py gmath.py
+	python3 main.py scripts/simple_anim.mdl
 
-parser: lex.yy.c y.tab.c y.tab.h $(OBJECTS)
-	gcc -o mdl $(CFLAGS) lex.yy.c y.tab.c $(OBJECTS) $(LDFLAGS)
+sphere: main.py matrix.py mdl.py display.py draw.py gmath.py
+	python3 main.py scripts/sphere.mdl
 
-lex.yy.c: mdl.l y.tab.h
-	flex -I mdl.l
-
-y.tab.c: mdl.y symtab.h parser.h
-	bison -d -y mdl.y
-
-y.tab.h: mdl.y
-	bison -d -y mdl.y
-
-symtab.o: symtab.c parser.h matrix.h
-	gcc -c $(CFLAGS) symtab.c
-
-print_pcode.o: print_pcode.c parser.h matrix.h
-	gcc -c $(CFLAGS) print_pcode.c
-
-matrix.o: matrix.c matrix.h
-	gcc -c $(CFLAGS) matrix.c
-
-my_main.o: my_main.c parser.h print_pcode.c matrix.h display.h ml6.h draw.h stack.h
-	gcc -c $(CFLAGS) my_main.c
-
-display.o: display.c display.h ml6.h matrix.h
-	$(CC) $(CFLAGS) -c display.c
-
-draw.o: draw.c draw.h display.h ml6.h matrix.h gmath.h
-	$(CC) $(CFLAGS) -c draw.c
-
-gmath.o: gmath.c gmath.h matrix.h
-	$(CC) $(CFLAGS) -c gmath.c
-
-stack.o: stack.c stack.h matrix.h
-	$(CC) $(CFLAGS) -c stack.c
+airboat: main.py matrix.py mdl.py display.py draw.py gmath.py
+	python3 main.py scripts/airboat.mdl
 
 clean:
-	rm y.tab.c y.tab.h
-	rm lex.yy.c
-	rm -rf mdl.dSYM
-	rm *.o *~
+	rm *pyc *out parsetab.py
+
+clear:
+	rm *pyc *out parsetab.py *ppm
