@@ -7,7 +7,7 @@ box: main.py matrix.py mdl.py display.py draw.py gmath.py
 face: main.py matrix.py mdl.py display.py draw.py gmath.py
 	python3 main.py scripts/face.mdl
 
-anim: main.py matrix.py mdl.py display.py draw.py gmath.py
+animate: main.py matrix.py mdl.py display.py draw.py gmath.py
 	python3 main.py scripts/simple_anim.mdl
 
 sphere: main.py matrix.py mdl.py display.py draw.py gmath.py
