@@ -1,0 +1,8 @@
+constants shiny_purple 0.2 0.3 0.7 0.0 0.0 0.0 0.0 0.3 0.7
+push
+    move 250 250 0
+    scale 20 20 20
+    mesh shiny_purple :airboat
+pop
+shading phong
+save airboat.png

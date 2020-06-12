@@ -129,7 +129,34 @@ def scanline_convert(polygons, i, screen, zbuffer, color, shade):
             v0 = [ v0[i] + dv0[i] for i in range(3)]
             v1 = [ v1[i] + dv1[i] for i in range(3)]
 
-
+def add_mesh(polygons, mesh):
+    f = open('.obj/' + mesh + '.obj').read().split('\n')
+    vs = list()
+    fs = list()
+    for i in range(len(f)):
+        if len(f[i]) > 0:
+            if f[i][0] == 'v':
+                coords = f[i].split(" ")[1:]
+                vs.append([float(coord) for coord in coords])
+            if f[i][0] == 'f':
+                face = f[i].split(" ")[1:]
+                fs.append([int(i) - 1 for i in face])
+    for face in fs:
+        if len(face) == 3 or len(face) == 4:
+            p0 = vs[face[0]]
+            p1 = vs[face[1]]
+            p2 = vs[face[2]]
+            add_polygon(polygons,
+                p0[0], p0[1], p0[2],
+                p1[0], p1[1], p1[2],
+                p2[0], p2[1], p2[2])
+            if len(face) == 4:
+                p3 = vs[face[3]]
+                add_polygon(polygons,
+                    p0[0], p0[1], p0[2],
+                    p2[0], p2[1], p2[2],
+                    p3[0], p3[1], p3[2])
+    return mesh
 
 def add_polygon( polygons, x0, y0, z0, x1, y1, z1, x2, y2, z2 ):
     add_point(polygons, x0, y0, z0)

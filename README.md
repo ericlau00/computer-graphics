@@ -16,6 +16,7 @@ Roster: **Eric Lau, Period 10**
   - MDL command: `shading phong` for phong shading.
   - Only flat, gouraud, and phong shading types are supported.
 - Implement MDL `mesh` command (.obj file support)
+  - Put .obj files in /.obj directory
 
 ## Proposal
 

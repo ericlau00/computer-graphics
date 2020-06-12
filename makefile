@@ -13,6 +13,9 @@ animate: main.py matrix.py mdl.py display.py draw.py gmath.py
 sphere: main.py matrix.py mdl.py display.py draw.py gmath.py
 	python3 main.py scripts/sphere.mdl
 
+airboat: main.py matrix.py mdl.py display.py draw.py gmath.py
+	python3 main.py scripts/airboat.mdl
+
 clean:
 	rm *pyc *out parsetab.py
 
