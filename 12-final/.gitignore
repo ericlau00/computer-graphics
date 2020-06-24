@@ -1,10 +1,19 @@
+#images
+*.ppm
+*.png
+*.jpg
+*.jpeg
+*.gif
+
+#python pycs
+*.pyc
+
 # Prerequisites
 *.d
 
 # Object files
 *.o
 *.ko
-*.obj
 *.elf
 
 # Linker output
@@ -50,3 +59,12 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# Executable files
+main
+
+# Test files
+test.c
+
+# Visual Studio Code
+.vscode
