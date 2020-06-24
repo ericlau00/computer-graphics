@@ -2,6 +2,8 @@
 
 Computer Graphics w/ JonAlf Dyrland-Weaver at Stuyvesant 2019-2020
 
+This repository contains notes and assignments from the course.
+
 ## Wednesday, Thursday 11, 12 March 2020
 
 ## 3D Shapes
